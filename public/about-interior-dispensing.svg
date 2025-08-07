@@ -1,0 +1,14 @@
+<svg width="300" height="128"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="128" fill="#f3f4f6"/>
+    <rect x="10" y="10" width="280" height="108" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="6"/>
+    <rect x="20" y="25" width="60" height="40" fill="#dc2626" rx="4"/>
+    <text x="50" y="48" text-anchor="middle" font-size="8" fill="white" font-weight="bold">OFFIZIN</text>
+    <rect x="90" y="30" width="80" height="15" fill="#f3f4f6" rx="2"/>
+    <rect x="90" y="50" width="60" height="15" fill="#f3f4f6" rx="2"/>
+    <circle cx="220" cy="45" r="15" fill="#22c55e"/>
+    <text x="220" y="50" text-anchor="middle" font-size="12" fill="white">+</text>
+    <text x="150" y="100" text-anchor="middle" font-size="14" fill="#6b7280" font-weight="bold">
+    Moderne Offizin
+    </text>
+</svg>

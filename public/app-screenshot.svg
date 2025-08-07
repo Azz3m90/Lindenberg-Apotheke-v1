@@ -1,0 +1,28 @@
+<svg width="240" height="520"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect width="240" height="520" fill="#1f2937" rx="24"/>
+    <rect x="12" y="12" width="216" height="496" fill="#000000" rx="20"/>
+    <rect x="20" y="50" width="200" height="420" fill="#ffffff" rx="8"/>
+
+    <!-- App Header -->
+    <rect x="30" y="65" width="180" height="40" fill="#dc2626" rx="4"/>
+    <text x="120" y="87" text-anchor="middle" font-size="14" fill="white" font-weight="bold">Lindenberg-Apotheke</text>
+
+    <!-- Menu Items -->
+    <rect x="30" y="120" width="180" height="30" fill="#f3f4f6" rx="4"/>
+    <text x="40" y="138" font-size="12" fill="#374151">📋 Rezept vorbestellen</text>
+
+    <rect x="30" y="160" width="180" height="30" fill="#f3f4f6" rx="4"/>
+    <text x="40" y="178" font-size="12" fill="#374151">🩺 Notdienst finden</text>
+
+    <rect x="30" y="200" width="180" height="30" fill="#f3f4f6" rx="4"/>
+    <text x="40" y="218" font-size="12" fill="#374151">💊 Medikamente</text>
+
+    <rect x="30" y="240" width="180" height="30" fill="#f3f4f6" rx="4"/>
+    <text x="40" y="258" font-size="12" fill="#374151">📞 Kontakt</text>
+
+    <!-- Bottom -->
+    <text x="120" y="420" text-anchor="middle" font-size="10" fill="#6b7280">
+    Apotheke vor Ort App
+    </text>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "name": "Lindenberg-Apotheke Ilmenau",
+  "short_name": "Lindenberg-Apotheke",
+  "description": "Ihre moderne Apotheke im Ärztehaus Ilmenau - Kompetente Beratung, keine Wartezeiten",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

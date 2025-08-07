@@ -1,0 +1,15 @@
+<svg width="600" height="400"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="400" fill="#f3f4f6"/>
+    <rect x="50" y="50" width="500" height="300" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" rx="8"/>
+    <rect x="70" y="100" width="180" height="120" fill="#dc2626" rx="4"/>
+    <text x="160" y="165" text-anchor="middle" font-size="16" fill="white" font-weight="bold">APOTHEKE</text>
+    <rect x="270" y="120" width="80" height="80" fill="#22c55e" rx="40"/>
+    <text x="310" y="165" text-anchor="middle" font-size="24" fill="white">+</text>
+    <text x="300" y="300" text-anchor="middle" font-size="18" fill="#374151" font-weight="bold">
+    Lindenberg-Apotheke Ilmenau
+    </text>
+    <text x="300" y="325" text-anchor="middle" font-size="14" fill="#6b7280">
+    Moderne Apotheke im Ärztehaus
+    </text>
+</svg>

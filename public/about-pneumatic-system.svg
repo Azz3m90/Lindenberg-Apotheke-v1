@@ -1,0 +1,16 @@
+<svg width="300" height="128"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="128" fill="#f9fafb"/>
+    <rect x="10" y="10" width="280" height="108" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" rx="6"/>
+    <!-- Pneumatic tubes -->
+    <rect x="30" y="30" width="240" height="8" fill="#6b7280" rx="4"/>
+    <rect x="30" y="50" width="240" height="8" fill="#6b7280" rx="4"/>
+    <rect x="30" y="70" width="240" height="8" fill="#6b7280" rx="4"/>
+    <!-- Capsules -->
+    <rect x="50" y="26" width="20" height="16" fill="#dc2626" rx="8"/>
+    <rect x="120" y="46" width="20" height="16" fill="#22c55e" rx="8"/>
+    <rect x="200" y="66" width="20" height="16" fill="#3b82f6" rx="8"/>
+    <text x="150" y="105" text-anchor="middle" font-size="12" fill="#6b7280" font-weight="bold">
+    Pneumatisches Rohrsystem
+    </text>
+</svg>
