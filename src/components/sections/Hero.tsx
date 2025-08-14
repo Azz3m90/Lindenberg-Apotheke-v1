@@ -93,14 +93,14 @@ export default function Hero() {
                   <div className="font-medium text-gray-900">
                     Öffnungszeiten
                   </div>
-                  <div className="text-sm">Mo-Fr: 7-18 Uhr</div>
+                  <div className="text-sm">Mo-Fr: 7-18 Uhr | Sa: 9-12 Uhr</div>
                 </div>
               </div>
               <div className="flex items-center text-gray-600">
                 <MapPin className="w-5 h-5 mr-2 text-primary-500" />
                 <div>
                   <div className="font-medium text-gray-900">Adresse</div>
-                  <div className="text-sm">Krankenhausstr. 26</div>
+                  <div className="text-sm">Krankenhausstr. 26, 98693 Ilmenau</div>
                 </div>
               </div>
             </div>
