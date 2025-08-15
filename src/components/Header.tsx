@@ -41,7 +41,14 @@ export default function Header() {
         { name: "Anfahrt", href: "/uber-uns/anfahrt" },
       ],
     },
-    { name: "Gesundheit", href: "/gesundheit" },
+    { 
+      name: "Interessantes", 
+      href: "/interessantes",
+      submenu: [
+        { name: "Apothekenzeitungen", href: "/interessantes/Apothekenzeitungen" },
+        { name: "E-Nummern", href: "/interessantes/E-Nummern" },
+      ], 
+    },
     { name: "Kontakt", href: "/kontakt" },
   ];
 

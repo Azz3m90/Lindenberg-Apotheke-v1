@@ -234,12 +234,12 @@ export default function Notdienst() {
                           <MapPin className="w-4 h-4 mr-2" />
                           <span className="text-sm">{pharmacy.address}</span>
                         </div>
-                        <div className="flex items-center text-gray-600">
+                        {/* <div className="flex items-center text-gray-600">
                           <Navigation className="w-4 h-4 mr-2" />
                           <span className="text-sm">
                             {pharmacy.distance} entfernt
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                       {pharmacy.status === "current" && (
                         <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
@@ -285,7 +285,7 @@ export default function Notdienst() {
                         <Phone className="w-4 h-4 mr-2" />
                         Anrufen
                       </a>
-                      <a
+                      {/* <a
                         href={`https://www.google.com/maps/search/${encodeURIComponent(
                           pharmacy.address
                         )}`}
@@ -295,7 +295,7 @@ export default function Notdienst() {
                       >
                         <MapPin className="w-4 h-4 mr-2" />
                         Route planen
-                      </a>
+                      </a> */}
                     </div>
                   </div>
                 ))}

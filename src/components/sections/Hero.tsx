@@ -110,14 +110,14 @@ export default function Hero() {
           <div className="relative">
             <div className="relative z-10">
               <img
-                src="/logo.png"
+                src="/pharmacy-image.png"
                 alt="Lindenberg-Apotheke Ilmenau - Logo"
-                className="w-full h-auto rounded-2xl shadow-2xl object-contain"
+                className="w-full h-auto rounded-2xl shadow-2xl object-cover"
                 style={{ minHeight: "300px" }}
               />
 
               {/* Floating Card */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl border border-gray-100 max-w-xs">
+              <div className="absolute -bottom-6 md:-left-6 bg-primary-100 p-6 rounded-xl shadow-xl border border-primary-100 max-w-xs">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
@@ -129,7 +129,9 @@ export default function Hero() {
                       Direkte Hotline
                     </div>
                     <div className="text-lg font-bold text-primary-600">
-                      03677 888888
+                      <a href="tel:+493677888888">
+                        03677 888888
+                      </a>
                     </div>
                   </div>
                 </div>
