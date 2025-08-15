@@ -2,6 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/notdienst": "pages/notdienst.js",
   "/": "pages/index.js",
+  "/leistungen": "pages/leistungen.js",
   "/uber-uns": "pages/uber-uns.js"
 }

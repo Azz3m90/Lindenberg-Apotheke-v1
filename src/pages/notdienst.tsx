@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { NextSeo } from "next-seo";
 import Layout from "../components/Layout";
+import EmergencyPharmacyService from "../components/EmergencyPharmacyService";
+import { calculateDistance, formatDistance } from "../utils/dateUtils";
 import {
   AlertTriangle,
   Phone,
@@ -11,55 +13,23 @@ import {
   Navigation,
   Search,
   Filter,
+  Loader,
 } from "lucide-react";
 
-// Mock emergency pharmacy data - in real app, this would come from an API
-const emergencyPharmacies = [
-  {
-    id: 1,
-    name: "Rathaus-Apotheke Ilmenau",
-    address: "Marktplatz 1, 98693 Ilmenau",
-    phone: "03677-123456",
-    distance: "0.8 km",
-    date: new Date().toLocaleDateString("de-DE"),
-    timeStart: "18:00",
-    timeEnd: "08:00",
-    status: "current",
-  },
-  {
-    id: 2,
-    name: "Stadt-Apotheke Ilmenau",
-    address: "Bahnhofstraße 15, 98693 Ilmenau",
-    phone: "03677-654321",
-    distance: "1.2 km",
-    date: new Date(Date.now() + 86400000).toLocaleDateString("de-DE"),
-    timeStart: "18:00",
-    timeEnd: "08:00",
-    status: "upcoming",
-  },
-  {
-    id: 3,
-    name: "Apotheke am Gymnasium",
-    address: "Gymnasiumstraße 10, 98693 Ilmenau",
-    phone: "03677-789012",
-    distance: "1.5 km",
-    date: new Date(Date.now() + 172800000).toLocaleDateString("de-DE"),
-    timeStart: "18:00",
-    timeEnd: "08:00",
-    status: "upcoming",
-  },
-  {
-    id: 4,
-    name: "Apotheke Arnstadt",
-    address: "Hauptstraße 45, 99310 Arnstadt",
-    phone: "03628-567890",
-    distance: "25 km",
-    date: new Date(Date.now() + 259200000).toLocaleDateString("de-DE"),
-    timeStart: "18:00",
-    timeEnd: "08:00",
-    status: "upcoming",
-  },
-];
+// Define pharmacy interface
+interface Pharmacy {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  distance?: string;
+  date: string;
+  timeStart: string;
+  timeEnd: string;
+  status: "current" | "upcoming";
+  lat: string;
+  lng: string;
+}
 
 const emergencyNumbers = [
   {
@@ -92,7 +62,14 @@ export default function Notdienst() {
   const [currentTime, setCurrentTime] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterLocation, setFilterLocation] = useState("all");
+  const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
+  // Update current time
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -110,7 +87,53 @@ export default function Notdienst() {
     return () => clearInterval(interval);
   }, []);
 
-  const filteredPharmacies = emergencyPharmacies.filter((pharmacy) => {
+  // Get user location if available
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log("Error getting location:", error);
+        }
+      );
+    }
+  }, []);
+
+  // Handle data loaded from API
+  const handleDataLoaded = (data: Pharmacy[]) => {
+    // Calculate distances if user location is available
+    if (userLocation) {
+      data = data.map((pharmacy) => {
+        const lat = parseFloat(pharmacy.lat);
+        const lng = parseFloat(pharmacy.lng);
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            lat,
+            lng
+          );
+          return {
+            ...pharmacy,
+            distance: formatDistance(distance),
+          };
+        }
+        return pharmacy;
+      });
+    }
+
+    setPharmacies(data);
+    setLoading(false);
+  };
+
+  // Filter pharmacies based on search and location filter
+  const filteredPharmacies = pharmacies.filter((pharmacy) => {
     const matchesSearch =
       pharmacy.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pharmacy.address.toLowerCase().includes(searchTerm.toLowerCase());
@@ -143,6 +166,9 @@ export default function Notdienst() {
         description="Aktuelle Apotheken-Notdienste in Ilmenau und Umgebung. 24h Notdienst-Kalender, Adressen, Telefonnummern und wichtige Notrufnummern für den Gesundheitsnotfall."
         canonical="https://www.lindenberg-apotheke.de/notdienst/"
       />
+
+      {/* Load emergency pharmacy data */}
+      <EmergencyPharmacyService onDataLoaded={handleDataLoaded} />
 
       <script
         type="application/ld+json"
@@ -215,93 +241,114 @@ export default function Notdienst() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Aktuelle Notdienste ({filteredPharmacies.length})
-              </h2>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Aktuelle Notdienste{" "}
+                  {!loading && `(${filteredPharmacies.length})`}
+                </h2>
+              </div>
 
-              <div className="space-y-4">
-                {filteredPharmacies.map((pharmacy) => (
-                  <div
-                    key={pharmacy.id}
-                    className="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          {pharmacy.name}
-                        </h3>
-                        <div className="flex items-center text-gray-600 mb-1">
-                          <MapPin className="w-4 h-4 mr-2" />
-                          <span className="text-sm">{pharmacy.address}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600">
-                          <Navigation className="w-4 h-4 mr-2" />
-                          <span className="text-sm">
-                            {pharmacy.distance} entfernt
-                          </span>
-                        </div>
-                      </div>
-                      {pharmacy.status === "current" && (
-                        <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
-                          Aktuell
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <div className="flex items-center mb-2">
-                          <Calendar className="w-5 h-5 mr-2 text-primary-500" />
-                          <span className="font-semibold">Notdienst-Zeit</span>
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          <div>{pharmacy.date}</div>
-                          <div>
-                            {pharmacy.timeStart} - {pharmacy.timeEnd} Uhr
-                            (Folgetag)
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
+                    <Loader className="w-8 h-8 text-primary-500" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Notdienste werden geladen
+                  </h3>
+                  <p className="text-gray-600">
+                    Bitte warten Sie einen Moment, während wir die aktuellen
+                    Notdienste abrufen.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredPharmacies.map((pharmacy) => (
+                    <div
+                      key={pharmacy.id}
+                      className="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            {pharmacy.name}
+                          </h3>
+                          <div className="flex items-center text-gray-600 mb-1">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            <span className="text-sm">{pharmacy.address}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <Navigation className="w-4 h-4 mr-2" />
+                            <span className="text-sm">
+                              {pharmacy.distance || "Entfernung berechnen..."}
+                            </span>
                           </div>
                         </div>
+                        {pharmacy.status === "current" && (
+                          <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            Aktuell
+                          </span>
+                        )}
                       </div>
 
-                      <div className="bg-primary-50 rounded-lg p-4">
-                        <div className="flex items-center mb-2">
-                          <Phone className="w-5 h-5 mr-2 text-primary-500" />
-                          <span className="font-semibold">Telefon</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="flex items-center mb-2">
+                            <Calendar className="w-5 h-5 mr-2 text-primary-500" />
+                            <span className="font-semibold">
+                              Notdienst-Zeit
+                            </span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            <div>{pharmacy.date}</div>
+                            <div>
+                              {pharmacy.timeStart} - {pharmacy.timeEnd} Uhr
+                              {pharmacy.timeEnd < pharmacy.timeStart &&
+                                " (Folgetag)"}
+                            </div>
+                          </div>
                         </div>
+
+                        <div className="bg-primary-50 rounded-lg p-4">
+                          <div className="flex items-center mb-2">
+                            <Phone className="w-5 h-5 mr-2 text-primary-500" />
+                            <span className="font-semibold">Telefon</span>
+                          </div>
+                          <a
+                            href={`tel:${pharmacy.phone.replace(/[\s-]/g, "")}`}
+                            className="text-primary-600 hover:text-primary-700 font-semibold"
+                          >
+                            {pharmacy.phone}
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
                         <a
                           href={`tel:${pharmacy.phone.replace(/[\s-]/g, "")}`}
-                          className="text-primary-600 hover:text-primary-700 font-semibold"
+                          className="btn btn-primary flex-1 text-center"
                         >
-                          {pharmacy.phone}
+                          <Phone className="w-4 h-4 mr-2" />
+                          Anrufen
+                        </a>
+                        <a
+                          href={`https://www.google.com/maps/search/${encodeURIComponent(
+                            pharmacy.address
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-secondary flex-1 text-center"
+                        >
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Route planen
                         </a>
                       </div>
                     </div>
+                  ))}
+                </div>
+              )}
 
-                    <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
-                      <a
-                        href={`tel:${pharmacy.phone.replace(/[\s-]/g, "")}`}
-                        className="btn btn-primary flex-1 text-center"
-                      >
-                        <Phone className="w-4 h-4 mr-2" />
-                        Anrufen
-                      </a>
-                      <a
-                        href={`https://www.google.com/maps/search/${encodeURIComponent(
-                          pharmacy.address
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-secondary flex-1 text-center"
-                      >
-                        <MapPin className="w-4 h-4 mr-2" />
-                        Route planen
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {filteredPharmacies.length === 0 && (
+              {!loading && filteredPharmacies.length === 0 && (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Search className="w-8 h-8 text-gray-400" />

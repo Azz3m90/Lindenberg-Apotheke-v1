@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
 import { NextSeo, DefaultSeo } from "next-seo";
+import { GlobalLoaderProvider } from "../contexts/GlobalLoaderContext";
+import GlobalLoader from "../components/GlobalLoader";
 import "../styles/globals.css";
 
 // Default SEO configuration
@@ -79,10 +81,13 @@ const defaultSEO = {
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <DefaultSeo {...defaultSEO} />
-      <Component {...pageProps} />
-    </>
+    <GlobalLoaderProvider>
+      <>
+        <DefaultSeo {...defaultSEO} />
+        <GlobalLoader />
+        <Component {...pageProps} />
+      </>
+    </GlobalLoaderProvider>
   );
 }
 

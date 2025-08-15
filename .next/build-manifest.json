@@ -27,6 +27,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/leistungen": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/leistungen.js"
+    ],
+    "/notdienst": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/notdienst.js"
+    ],
     "/uber-uns": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
