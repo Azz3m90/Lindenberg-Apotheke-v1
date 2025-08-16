@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/notdienst": "pages/notdienst.js",
-  "/": "pages/index.js",
-  "/leistungen": "pages/leistungen.js",
-  "/uber-uns": "pages/uber-uns.js"
+  "/interessantes": "pages/interessantes.js",
+  "/interessantes/ilmenau": "pages/interessantes/ilmenau.js",
+  "/interessantes/apothekenzeitungen": "pages/interessantes/apothekenzeitungen.js",
+  "/interessantes/e-nummern": "pages/interessantes/e-nummern.js"
 }

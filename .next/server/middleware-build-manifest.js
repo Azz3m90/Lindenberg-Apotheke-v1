@@ -9,11 +9,6 @@ self.__BUILD_MANIFEST = {
   "lowPriorityFiles": [],
   "rootMainFiles": [],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -24,20 +19,25 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/leistungen": [
+    "/interessantes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/leistungen.js"
+      "static/chunks/pages/interessantes.js"
     ],
-    "/notdienst": [
+    "/interessantes/apothekenzeitungen": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/notdienst.js"
+      "static/chunks/pages/interessantes/apothekenzeitungen.js"
     ],
-    "/uber-uns": [
+    "/interessantes/e-nummern": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/uber-uns.js"
+      "static/chunks/pages/interessantes/e-nummern.js"
+    ],
+    "/interessantes/ilmenau": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/interessantes/ilmenau.js"
     ]
   },
   "ampFirstPages": []

@@ -18,21 +18,6 @@ export default function Header() {
   const navigation = [
     { name: "Startseite", href: "/" },
     {
-      name: "Leistungen",
-      href: "/leistungen",
-      submenu: [
-        { name: "Blutdruckmessung", href: "/leistungen/blutdruckmessung" },
-        {
-          name: "Kompressionsstrümpfe",
-          href: "/leistungen/kompressionsstruempfe",
-        },
-        { name: "Reiseberatung", href: "/leistungen/reiseberatung" },
-        { name: "Verleih-Service", href: "/leistungen/verleih" },
-        { name: "Hausapotheke Check", href: "/leistungen/hausapotheke-check" },
-      ],
-    },
-    { name: "Notdienst", href: "/notdienst" },
-    {
       name: "Über uns",
       href: "/uber-uns",
       submenu: [
@@ -41,7 +26,21 @@ export default function Header() {
         { name: "Anfahrt", href: "/uber-uns/anfahrt" },
       ],
     },
-    { name: "Gesundheit", href: "/gesundheit" },
+    { name: "Selbsthilfegruppen", href: "/selbsthilfegruppen" },
+    {
+      name: "Interessantes",
+      href: "/interessantes",
+      submenu: [
+        { name: "Stadt Ilmenau", href: "/interessantes/ilmenau" },
+        {
+          name: "Apothekenzeitungen",
+          href: "/interessantes/apothekenzeitungen",
+        },
+        { name: "E-Nummern", href: "/interessantes/e-nummern" },
+      ],
+    },
+    { name: "Notdienst", href: "/notdienst" },
+    { name: "Apotheken-App", href: "/app" },
     { name: "Kontakt", href: "/kontakt" },
   ];
 
