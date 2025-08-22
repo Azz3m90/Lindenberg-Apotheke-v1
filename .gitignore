@@ -1,3 +1,7 @@
 /reports/
 /node_modules/
 /.zencoder/
+# next.js build output
+/.next
+/data/
+*.log

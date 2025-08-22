@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:static": "BUILD_STATIC=true next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "npm install @next/swc-win32-x64-msvc"

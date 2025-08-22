@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable static optimization for better SEO
-  output: 'export',
+  // Enable static optimization for better SEO (only for production builds)
+  // API routes are needed for contact form functionality
+  ...(process.env.BUILD_STATIC === 'true' ? { output: 'export' } : {}),
   trailingSlash: true,
   images: {
     unoptimized: true

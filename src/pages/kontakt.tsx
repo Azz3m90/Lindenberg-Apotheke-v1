@@ -39,11 +39,38 @@ export default function Kontakt() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+          privacy: false,
+        });
+      } else {
+        // Handle error
+        alert(result.error || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.');
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   const handleInputChange = (
