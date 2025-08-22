@@ -1,9 +1,0 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/interessantes": "pages/interessantes.js",
-  "/interessantes/ilmenau": "pages/interessantes/ilmenau.js",
-  "/interessantes/apothekenzeitungen": "pages/interessantes/apothekenzeitungen.js",
-  "/interessantes/e-nummern": "pages/interessantes/e-nummern.js"
-}
