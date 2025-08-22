@@ -52,14 +52,17 @@ export default function Apothekenzeitungen() {
                 <div className="space-y-8">
                   {/* Apotheken-Umschau */}
                   <div className="border-b border-gray-200 pb-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-blue-600 rounded-lg p-4 text-white text-center h-24 w-24 flex items-center justify-center flex-shrink-0">
-                        <div>
-                          <div className="text-xs font-bold">APOTHEKEN</div>
-                          <div className="text-xs">UMSCHAU</div>
-                        </div>
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="w-full md:w-1/2 md:p-4">
+                        <a 
+                          href="https://www.apotheken-umschau.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >
+                        <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/au.png" className="w-full h-full object-contain rounded-lg"/>
+                        </a>
                       </div>
-                      <div className="flex-1">
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10">
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                           Apotheken-Umschau
                         </h3>
@@ -74,7 +77,10 @@ export default function Apothekenzeitungen() {
                           Gesundheits-Aufklärung, aktuelle Informationen,
                           kritische Hintergrund-Berichterstattung und praktische
                           Lebenshilfe. All das verantwortungsbewusst, kompetent,
-                          lebensbejahend und auch unterhaltend.
+                          lebensbejahend und auch unterhaltend, vor allem aber für den Laien immer gut verständlich. 
+                          Die Apotheken Umschau orientiert sich prinzipiell am neuesten, 
+                          gesicherten Stand der Wissenschaft und ist damit für jedermann ein perfekter Gesundheits-Berater, 
+                          auf den man sich verlassen kann.
                         </p>
                         <a
                           href="https://www.apotheken-umschau.de/"
@@ -89,18 +95,20 @@ export default function Apothekenzeitungen() {
                   </div>
 
                   {/* Diabetiker-Ratgeber */}
-                  <div className="border-b border-gray-200 pb-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="bg-green-600 rounded-lg p-4 text-white text-center h-24 w-24 flex items-center justify-center flex-shrink-0">
-                        <div>
-                          <div className="text-xs font-bold">DIABETIKER</div>
-                          <div className="text-xs">RATGEBER</div>
-                          <div className="text-red-600 bg-white rounded px-1 mt-1 text-xs">
-                            A
-                          </div>
+                  {/* <div className="border-b border-gray-200 pb-6">
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="p-4 justify-center">
+                        <div className="w-full md:w-1/2">
+                          <a 
+                            href="https://www.apotheken-umschau.de/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >
+                          <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/au.png" className="w-full h-full object-cover rounded-lg"/>
+                          </a>
                         </div>
                       </div>
-                      <div className="flex-1">
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                           Diabetiker-Ratgeber
                         </h3>
@@ -126,10 +134,52 @@ export default function Apothekenzeitungen() {
                         </a>
                       </div>
                     </div>
+                  </div> */}
+                  <div className="border-b border-gray-200 pb-6">
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="w-full md:w-1/2 md:p-4">
+                        <a 
+                          href="https://www.diabetes-ratgeber.net/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >
+                        <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/dr.png" className="w-full h-full object-contain rounded-lg"/>
+                        </a>
+                      </div>
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">
+                          Diabetiker-Ratgeber
+                        </h3>
+                        <p className="text-sm text-gray-700 mb-3">
+                          Der <strong>Diabetiker-Ratgeber</strong> ist
+                          Deutschlands größtes Spezial-Magazin für
+                          Diabetes-Patienten (und deren Angehörige); es
+                          erscheint monatlich und liegt in vielen Apotheken aus.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Das Magazin, Mitherausgeber ist die Deutsche 
+                          Diabetes-Stiftung, bietet den Betroffenen seriösen, 
+                          kompetenten, Mut machenden Gesundheitsrat und viele Informationen, 
+                          die dabei helfen, den Alltag – trotz Diabetes – positiv zu gestalten. 
+                          Die großen Themen der Zeitschrift sind: Ernährung 
+                          (Serie: Sterne-Koch Alfons Schuhbeck präsentiert diabatesorientierte Küchen-Köstlichkeiten), 
+                          Bewegung, Selbstkontrolle und Schutz vor gesundheitlichen Problemen, 
+                          die im Zusammenhang mit Diabetes auftreten können.
+                        </p>
+                        <a
+                          href="https://www.diabetes-ratgeber.net/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline text-sm mt-2 inline-block"
+                        >
+                          Zur Website →
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Senioren-Ratgeber */}
-                  <div className="border-b border-gray-200 pb-6">
+                  {/* <div className="border-b border-gray-200 pb-6">
                     <div className="flex items-start space-x-4">
                       <div className="bg-orange-500 rounded-lg p-4 text-white text-center h-24 w-24 flex items-center justify-center flex-shrink-0">
                         <div>
@@ -167,10 +217,54 @@ export default function Apothekenzeitungen() {
                         </a>
                       </div>
                     </div>
+                  </div> */}
+                  
+                  <div className="border-b border-gray-200 pb-6">
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="w-full md:w-1/2 md:p-4">
+                        <a 
+                          href="https://www.senioren-ratgeber.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >
+                        <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/sr.png" className="w-full h-full object-contain rounded-lg"/>
+                        </a>
+                      </div>
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                          Senioren-Ratgeber
+                        </h3>
+                        <p className="text-sm text-gray-700 mb-3">
+                          Der <strong>Senioren-Ratgeber</strong> ist präzise auf
+                          die ältere Generation zugeschnitten. Das
+                          Apotheken-Magazin, das monatlich erscheint,
+                          präsentiert eine Mischung aus Gesundheits-Ratschlägen
+                          und vernünftigen Alltags-Tipps.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Abwechselungsreiche Beiträge informieren über Beschwerden und Krankheiten, 
+                          die im Alter öfter aufreten, zeigen, 
+                          wie man ihnen vorbeugt und welche Erfolgs-Therapien möglich sind. 
+                          Darüber hinaus bietet der Senioren Ratgeber eine Fülle von Informationen, 
+                          die dabei helfen, mit den sozialen Problemen, 
+                          die für ältere Menschen typisch sind, 
+                          fertig zu werden. Das Magazin wird von Millionen Senioren als wertvolle, 
+                          regelmäßig gelesene Orientierungs-Hilfe sehr geschätzt.
+                        </p>
+                        <a
+                          href="https://www.senioren-ratgeber.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline text-sm mt-2 inline-block"
+                        >
+                          Zur Website →
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                   {/* BABY */}
-                  <div className="border-b border-gray-200 pb-6">
+                  {/* <div className="border-b border-gray-200 pb-6">
                     <div className="flex items-start space-x-4">
                       <div className="bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500 rounded-lg p-4 text-white text-center h-24 w-24 flex items-center justify-center flex-shrink-0">
                         <div className="text-lg font-bold">BABY</div>
@@ -201,10 +295,52 @@ export default function Apothekenzeitungen() {
                         </a>
                       </div>
                     </div>
+                  </div> */}
+                  <div className="border-b border-gray-200 pb-6">
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="w-full md:w-1/2 md:p-4">
+                        <a 
+                          href="https://www.baby-und-familie.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >
+                        <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/bf.png" className="w-full h-full object-contain rounded-lg"/>
+                        </a>
+                      </div>
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                          BABY und Familie
+                        </h3>
+                        <p className="text-sm text-gray-700 mb-3">
+                          <strong>BABY</strong> und die ersten Lebensjahre
+                          erscheint monatlich und wird von sehr vielen Apotheken
+                          als Spezial-Magazin für junge Eltern bereitgehalten.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Der Titel berichtet über Geburtsvorbereitung und Säuglingspflege, 
+                          stellt die typischen Kinderkrankheiten vor und sagt, 
+                          wie man mit ihnen vorbeugend und therapeutisch umgeht. 
+                          Zum Themen-Spektrum gehören außerdem: 
+                          Die altersgerechte richtige Ernährung von Kindern, 
+                          ihre psychische und soziale Entwicklung und ihre Erziehung. 
+                          Das Magazin ist sehr praxisorientiert, 
+                          voller Tipps und selbstverständlich sensibel und verständlich geschrieben. 
+                          Als Bonbon enthält jedes Heft ein Märchen-Poster mit einem dazu passenden Vorlesetext.
+                        </p>
+                        <a
+                          href="https://www.baby-und-familie.de/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline text-sm mt-2 inline-block"
+                        >
+                          Zur Website →
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                   {/* medizini */}
-                  <div>
+                  {/* <div>
                     <div className="flex items-start space-x-4">
                       <div className="bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg p-4 text-white text-center h-24 w-24 flex items-center justify-center flex-shrink-0">
                         <div>
@@ -229,6 +365,46 @@ export default function Apothekenzeitungen() {
                           lehrreiche Unterhaltung, Informationen aus Natur,
                           Umwelt, Technik und Sport, Witze, Humor, Denksport und
                           Mitmach-Aktionen.
+                        </p>
+                        <a
+                          href="https://www.wortundbildverlag.de/medizini"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline text-sm mt-2 inline-block"
+                        >
+                          Zur Website →
+                        </a>
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="border-b border-gray-200 pb-6">
+                    <div className="flex flex-col md:flex-row w-full">
+                      <div className="w-full md:w-1/2 md:p-4">
+                        <a 
+                          href="https://www.wortundbildverlag.de/medizini"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >
+                        <img src="https://hvs.wortundbildverlag.de/cover/current/2d/medium/mz.png" className="w-full h-full object-contain rounded-lg"/>
+                        </a>
+                      </div>
+                      <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-10">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                          medizini
+                        </h3>
+                        <p className="text-sm text-gray-700 mb-3">
+                          <strong>medizini</strong> ist Europas größte
+                          Kinder-Zeitschrift, ein pfiffiges Poster-Magazin der
+                          Apotheken, das von Kindern heiß geliebt wird und bei
+                          Eltern als pädagogisch wertvolle Lektüre hohes Ansehen
+                          genießt.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Die monatlich erscheinenden Hefte für Kinder von 4 bis 12 Jahren 
+                          bieten kindgerechte Gesundheits-Aufklärung, lehrreiche Unterhaltung, 
+                          Informationen aus Natur, Umwelt, Technik und Sport, Witze, 
+                          Humor, Denksport, Cartoons und Mitmach-Aktionen. Besonders begehrt: 
+                          das Super-Tierposter für die jüngeren Kinder und das Naturkunde-Poster für die älteren.
                         </p>
                         <a
                           href="https://www.wortundbildverlag.de/medizini"

@@ -204,7 +204,7 @@ export default function EmergencyInfo() {
                     href="tel:0361730730"
                     className="text-lg font-bold text-purple-600 hover:text-purple-700"
                   >
-                    0361 730730
+                    0361 730 730
                   </a>
                 </div>
               </div>

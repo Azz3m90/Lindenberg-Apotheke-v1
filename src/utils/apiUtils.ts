@@ -24,9 +24,7 @@ export function getApiDate(): Date {
   // Always use the test date for now to match the example
   // This ensures the API calls work with the provided token
   const testDate = new Date();
-  testDate.setFullYear(2025);
-  testDate.setMonth(7); // August (0-indexed)
-  testDate.setDate(13);
+  testDate.setDate(testDate.getDate() - 1)
 
   // In a real production environment, you would use:
   // return isDevelopment() ? testDate : new Date();

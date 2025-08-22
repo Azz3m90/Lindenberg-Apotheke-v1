@@ -31,6 +31,10 @@ const nextConfig = {
         {
           source: '/kontakt/',
           destination: '/contact'
+        },
+        {
+          source: '/api/:path*',
+          destination: 'https://www.lakt.de/api/:path*'
         }
       ]
     }

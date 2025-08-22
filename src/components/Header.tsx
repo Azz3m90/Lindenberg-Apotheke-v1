@@ -24,9 +24,10 @@ export default function Header() {
         { name: "Unsere Apotheke", href: "/uber-uns/apotheke" },
         { name: "Team", href: "/uber-uns/team" },
         { name: "Anfahrt", href: "/uber-uns/anfahrt" },
+        { name: "Kontakt", href: "/kontakt" },
       ],
     },
-    { name: "Selbsthilfegruppen", href: "/selbsthilfegruppen" },
+    // { name: "Selbsthilfegruppen", href: "/selbsthilfegruppen" },
     {
       name: "Interessantes",
       href: "/interessantes",
@@ -41,7 +42,7 @@ export default function Header() {
     },
     { name: "Notdienst", href: "/notdienst" },
     { name: "Apotheken-App", href: "/app" },
-    { name: "Kontakt", href: "/kontakt" },
+    
   ];
 
   const isActive = (href: string) => {

@@ -52,7 +52,7 @@ export default function EmergencyPharmacyService({
 
       // Fetch data from API (removed number limit to get all available data)
       const response = await fetch(
-        `https://www.lakt.de/api?begin=${beginParam}&end=${endParam}&token=${token}`
+        `/api?begin=${beginParam}&end=${endParam}&token=${token}`
       );
 
       if (!response.ok) {
@@ -93,7 +93,7 @@ export default function EmergencyPharmacyService({
 
     // Clean up interval on component unmount
     return () => clearInterval(refreshInterval);
-  }, [onDataLoaded]);
+  }, []);
 
   // If there's an error, render nothing - parent will use fallback data
   if (error) {
@@ -163,7 +163,7 @@ function parseXmlResponse(xmlText: string): Pharmacy[] {
     const address = `${street}, ${zip} ${city}`;
 
     // Determine if this is the current emergency service
-    const isCurrent = now >= startTime && now < endTime;
+    const isCurrent = now.getDate() == startTime.getDate() && now < endTime;
 
     pharmacies.push({
       id,

@@ -42,7 +42,7 @@ export default function Interessantes() {
               {/* Stadt Ilmenau Section */}
               <Link href="/interessantes/ilmenau" className="block">
                 <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="flex items-center space-x-6">
+                  <div className="flex items-start space-x-6">
                     <div className="flex-shrink-0">
                       <div className="w-24 h-24 bg-teal-600 rounded-lg flex items-center justify-center">
                         <div className="text-center text-white">
@@ -90,8 +90,8 @@ export default function Interessantes() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center">
-                        Apothekenzeitungen
+                      <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center hyphens-manual">
+                        Apotheken&shy;zeitungen
                         <ArrowRight className="w-5 h-5 ml-2 text-blue-600" />
                       </h2>
                       <p className="text-gray-700 mb-3">
@@ -99,10 +99,10 @@ export default function Interessantes() {
                         <span className="text-red-600 font-medium">
                           Apothekenzeitungen
                         </span>{" "}
-                        - Gesundheitsmagazine für alle Altersgruppen und
+                        - Gesundheitsmagazine{" "} für alle Altersgruppen und
                         Bedürfnisse.
                       </p>
-                      <div className="grid grid-cols-5 gap-2 mb-4">
+                      {/* <div className="grid md:grid-cols-5 grid-cols-auto justify-start gap-2 mb-4">
                         <div className="bg-blue-500 rounded p-1 text-white text-center text-xs">
                           <div className="font-bold">APOTHEKEN</div>
                           <div>UMSCHAU</div>
@@ -121,7 +121,7 @@ export default function Interessantes() {
                         <div className="bg-gradient-to-r from-blue-400 to-blue-600 rounded p-1 text-white text-center text-xs">
                           <div className="font-bold">medizini</div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="text-blue-600 hover:text-blue-800 font-medium">
                         Alle Magazine ansehen →
                       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import { NextSeo } from "next-seo";
 import Layout from "../components/Layout";
 import EmergencyPharmacyService from "../components/EmergencyPharmacyService";
@@ -51,7 +52,7 @@ const emergencyNumbers = [
     color: "green",
   },
   {
-    number: "0361 730730",
+    number: "0361 730 730",
     title: "Giftnotruf Thüringen",
     description: "GGIZ Erfurt - 24h erreichbar",
     color: "purple",
@@ -205,7 +206,7 @@ export default function Notdienst() {
         </div>
       </section>
 
-      {/* Search and Filter */}
+      {/* Search and Filter
       <section className="py-8 bg-gray-50 border-b border-gray-200">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row gap-4">
@@ -233,7 +234,7 @@ export default function Notdienst() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Emergency Pharmacies List */}
       <section className="py-16 lg:py-24">
@@ -265,7 +266,7 @@ export default function Notdienst() {
                 <div className="space-y-4">
                   {filteredPharmacies.map((pharmacy) => (
                     <div
-                      key={pharmacy.id}
+                      key={uuidv4()}
                       className="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
                     >
                       <div className="flex items-start justify-between mb-4">
