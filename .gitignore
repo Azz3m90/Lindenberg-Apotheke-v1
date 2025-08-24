@@ -5,3 +5,5 @@
 /.next
 /data/
 *.log
+/package-lock.json
+/TEMP/

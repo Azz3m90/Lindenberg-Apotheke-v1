@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import PrivacyNotice from "./PrivacyNotice";
 import { usePageLoader } from "../hooks/usePageLoader";
 
 interface LayoutProps {
@@ -17,6 +18,7 @@ export default function Layout({ children, className = "" }: LayoutProps) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <PrivacyNotice />
     </div>
   );
 }

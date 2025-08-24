@@ -8,6 +8,8 @@ import {
   Instagram,
   Smartphone,
   AlertCircle,
+  Shield,
+  CheckCircle,
 } from "lucide-react";
 
 export default function Footer() {
@@ -163,6 +165,74 @@ export default function Footer() {
               </p>
               <Link href="/app" className="btn btn-primary text-xs px-3 py-2">
                 Jetzt downloaden
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Privacy Information Section */}
+      <div className="border-t border-gray-800">
+        <div className="container-custom py-8">
+          <div className="bg-green-900 rounded-xl p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-green-700 rounded-full flex items-center justify-center flex-shrink-0">
+                <Shield className="w-6 h-6 text-green-200" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center mb-3">
+                  <h3 className="text-lg font-semibold text-white mr-3">
+                    🍃 Privacy-First Website
+                  </h3>
+                  <div className="inline-flex items-center px-3 py-1 bg-green-700 text-green-100 text-xs font-semibold rounded-full">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Cookie-frei
+                  </div>
+                </div>
+                
+                <p className="text-green-100 text-sm mb-4">
+                  Diese Website verwendet <strong>keine Cookies</strong> und <strong>kein Tracking</strong>. 
+                  Sie können unsere Website vollständig anonym nutzen. Ihre Privatsphäre ist uns wichtig.
+                </p>
+                
+                <div className="flex flex-wrap items-center gap-6 text-sm">
+                  <div className="flex items-center text-green-200">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    <span>Keine Cookies</span>
+                  </div>
+                  <div className="flex items-center text-green-200">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    <span>Kein Tracking</span>
+                  </div>
+                  <div className="flex items-center text-green-200">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    <span>DSGVO-konform</span>
+                  </div>
+                  <div className="flex items-center text-green-200">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    <span>Sichere Datenübertragung</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="hidden sm:block">
+                <Link
+                  href="/datenschutz"
+                  className="btn bg-green-700 hover:bg-green-600 text-white border-0 px-4 py-2 text-sm font-medium rounded-lg flex items-center"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Datenschutz
+                </Link>
+              </div>
+            </div>
+            
+            <div className="sm:hidden mt-4">
+              <Link
+                href="/datenschutz"
+                className="btn bg-green-700 hover:bg-green-600 text-white border-0 px-4 py-2 text-sm font-medium rounded-lg flex items-center w-fit"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Datenschutz
               </Link>
             </div>
           </div>
