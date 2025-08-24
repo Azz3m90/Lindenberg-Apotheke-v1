@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { NextSeo } from "next-seo";
 import Layout from "../components/Layout";
@@ -109,7 +109,7 @@ export default function Notdienst() {
   }, []);
 
   // Handle data loaded from API
-  const handleDataLoaded = (data: Pharmacy[]) => {
+  const handleDataLoaded = useCallback((data: Pharmacy[]) => {
     // Calculate distances if user location is available
     if (userLocation) {
       data = data.map((pharmacy) => {
@@ -134,12 +134,12 @@ export default function Notdienst() {
 
     setPharmacies(data);
     setLoading(false);
-  };
+  }, [userLocation]);
 
   // Handle refresh function from EmergencyPharmacyService
-  const handleRefreshFunction = (refreshFn: () => void) => {
+  const handleRefreshFunction = useCallback((refreshFn: () => void) => {
     setRefreshFunction(() => refreshFn);
-  };
+  }, []);
 
   // Manual refresh handler
   const handleManualRefresh = async () => {

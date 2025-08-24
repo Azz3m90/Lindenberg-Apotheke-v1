@@ -1,7 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { formatDate, formatTime } from "../utils/dateUtils";
 import { getApiDateRange, isDevelopment } from "../utils/apiUtils";
 import { useGlobalLoader } from "../contexts/GlobalLoaderContext";
+import { 
+  cachePharmacyData, 
+  getCachedPharmacyData, 
+  isCacheValid,
+  getCacheStats,
+  forceCacheRefresh 
+} from "../utils/cacheUtils";
 
 interface Pharmacy {
   id: string;
@@ -29,85 +36,159 @@ export default function EmergencyPharmacyService({
   const [error, setError] = useState<string | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<Date | null>(null);
   const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null);
-  const [usingFallbackData, setUsingFallbackData] = useState(false);
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const { showLoader, hideLoader } = useGlobalLoader();
 
+  // Function to fetch emergency pharmacy data (only called when cache is invalid or forced)
+  const fetchEmergencyPharmacies = useCallback(async (forceRefresh: boolean = false) => {
+    try {
+      // Check cache first unless forced refresh
+      if (!forceRefresh) {
+        const cachedData = getCachedPharmacyData();
+        if (cachedData) {
+          console.log('📦 Using cached pharmacy data (skipping API call)');
+          setLastFetchTime(new Date(cachedData.timestamp));
+          setError(null); // Clear any previous errors when using valid cache
+          onDataLoaded(cachedData.data);
+          return;
+        }
+      }
+
+      // If we reach here, we're actually making an API call
+      console.log('🌐 Making fresh API call to LAKT (cache invalid or forced refresh)');
+
+      showLoader("Aktuelle Notdienst-Daten werden von LAKT abgerufen...");
+
+      // Get date range for API request (current date + 14 days) - with detailed logging
+      const { begin: beginParam, end: endParam } = getApiDateRange(14, false);
+
+      console.log("Fetching live LAKT data with dynamic date range");
+
+      // API token for LAKT service
+      const token = "0075e630f7ea1c1900a8bb186ccc7382b0f48608";
+
+      console.log(
+        `Fetching live emergency pharmacy data from LAKT API: ${beginParam} to ${endParam}`
+      );
+
+      // Fetch data from our API proxy (which calls LAKT API) with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      
+      const response = await fetch(
+        `/api?begin=${beginParam}&end=${endParam}&token=${token}`,
+        {
+          signal: controller.signal,
+          headers: {
+            'Accept': 'application/xml, text/xml',
+            'User-Agent': 'Lindenberg-Apotheke-Website/1.0'
+          }
+        }
+      );
+      
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const xmlText = await response.text();
+      
+      console.log("Successfully received live data from LAKT API");
+      setError(null); // Clear any previous errors
+
+      const pharmacies = parseXmlResponse(xmlText);
+
+      // Cache the live data
+      cachePharmacyData(pharmacies);
+
+      // Update last fetch time
+      setLastFetchTime(new Date());
+
+      // Pass data to parent component
+      onDataLoaded(pharmacies);
+      
+    } catch (err) {
+      console.error("Error fetching emergency pharmacy data:", err);
+      
+      // Provide more descriptive error messages
+      let errorMessage = "Unbekannter Fehler beim Laden der Notdienst-Daten";
+      
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          errorMessage = "Zeitüberschreitung - Die LAKT-API antwortet nicht (15s Timeout). Versuchen Sie es später erneut.";
+        } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+          errorMessage = "Netzwerkfehler - Keine Verbindung zur LAKT-API möglich. Bitte überprüfen Sie Ihre Internetverbindung.";
+        } else if (err.message.includes('timeout')) {
+          errorMessage = "Zeitüberschreitung - Die LAKT-API antwortet nicht. Bitte versuchen Sie es später erneut.";
+        } else if (err.message.includes('404')) {
+          errorMessage = "LAKT-API Endpunkt nicht gefunden (HTTP 404). Der Service könnte temporär nicht verfügbar sein.";
+        } else if (err.message.includes('500')) {
+          errorMessage = "LAKT-API Server Fehler (HTTP 500). Der Service ist temporär nicht verfügbar.";
+        } else if (err.message.includes('HTTP')) {
+          errorMessage = `LAKT-API Fehler: ${err.message}`;
+        } else {
+          errorMessage = `Verbindungsfehler: ${err.message}`;
+        }
+      }
+      
+      setError(errorMessage);
+      setLastFetchTime(new Date());
+      
+      // Send empty array to show "Keine Apotheken gefunden" message
+      onDataLoaded([]);
+      
+      console.log("❌ API request failed - showing empty state with error message");
+    } finally {
+      hideLoader();
+    }
+  }, [showLoader, hideLoader, onDataLoaded]);
+
   // Manual refresh function
-  const manualRefresh = async () => {
+  const manualRefresh = useCallback(async () => {
     if (isManualRefreshing) return; // Prevent multiple simultaneous refreshes
     
     setIsManualRefreshing(true);
     try {
-      await fetchEmergencyPharmacies();
+      // Force refresh bypasses cache
+      await fetchEmergencyPharmacies(true);
     } finally {
       setIsManualRefreshing(false);
     }
-  };
-
-  // Function to fetch emergency pharmacy data
-  const fetchEmergencyPharmacies = async () => {
-    try {
-      showLoader("Notdienst-Daten werden geladen...");
-
-      // Get date range for API request (automatically handles dev/prod environments)
-      const { begin: beginParam, end: endParam } = getApiDateRange(14);
-
-      if (isDevelopment()) {
-        console.log("Running in development mode with test dates");
-      } else {
-        console.log("Running in production mode with current dates");
-      }
-
-      // API token
-      const token = "0075e630f7ea1c1900a8bb186ccc7382b0f48608";
-
-      console.log(
-        `Fetching emergency pharmacy data from ${beginParam} to ${endParam}`
-      );
-
-      // Fetch data from API (removed number limit to get all available data)
-      const response = await fetch(
-        `/api?begin=${beginParam}&end=${endParam}&token=${token}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-
-      const xmlText = await response.text();
-      const pharmacies = parseXmlResponse(xmlText);
-
-      // Update last fetch time and reset fallback flag
-      setLastFetchTime(new Date());
-      setUsingFallbackData(false);
-
-      // Pass data to parent component
-      onDataLoaded(pharmacies);
-    } catch (err) {
-      console.error("Error fetching emergency pharmacy data:", err);
-      setError(err instanceof Error ? err.message : "Unknown error occurred");
-
-      // If API fails, use fallback data and set flag
-      setUsingFallbackData(true);
-      setLastFetchTime(new Date());
-      onDataLoaded(getFallbackData());
-    } finally {
-      hideLoader();
-    }
-  };
+  }, [isManualRefreshing, fetchEmergencyPharmacies]);
 
   // Expose refresh function to parent component
   useEffect(() => {
     if (onRefreshFunction) {
       onRefreshFunction(manualRefresh);
     }
-  }, [onRefreshFunction]);
+  }, [onRefreshFunction, manualRefresh]);
 
-  // Effect to fetch data on mount and set up smart refresh intervals
+  // Effect to initialize data on mount - prioritizes cached data
   useEffect(() => {
-    fetchEmergencyPharmacies();
+    const initializeData = () => {
+      // First, check if we have valid cached data
+      const cachedData = getCachedPharmacyData();
+      
+      if (cachedData) {
+        // Use cached data immediately without API call
+        console.log('✅ Found valid cached data - skipping API call on mount');
+        setLastFetchTime(new Date(cachedData.timestamp));
+        setError(null); // Clear any previous errors when using valid cache
+        onDataLoaded(cachedData.data);
+        return; // Skip API call
+      }
+      
+      // No valid cached data - fetch from API
+      console.log('🌐 No cached data found - fetching fresh data from LAKT API');
+      fetchEmergencyPharmacies();
+    };
 
+    initializeData();
+  }, []); // Empty dependency array - only run on mount
+
+  // Effect to set up smart refresh intervals (runs only once)
+  useEffect(() => {
     // Set up smart refresh system
     const setupSmartRefresh = () => {
       const now = new Date();
@@ -137,12 +218,12 @@ export default function EmergencyPharmacyService({
       // Set timeout for next refresh
       const initialTimeout = setTimeout(() => {
         console.log("Scheduled emergency pharmacy data refresh");
-        fetchEmergencyPharmacies();
+        fetchEmergencyPharmacies(true); // Force refresh on scheduled updates
         
         // Set up regular 6-hour intervals after first scheduled refresh
         const refreshInterval = setInterval(() => {
           console.log("Auto-refreshing emergency pharmacy data (6-hour interval)");
-          fetchEmergencyPharmacies();
+          fetchEmergencyPharmacies(true); // Force refresh on scheduled updates
           
           // Update next refresh time
           const now = new Date();
@@ -157,27 +238,15 @@ export default function EmergencyPharmacyService({
       return initialTimeout;
     };
 
-    // Set up additional frequent status updates (every 30 minutes)
-    // This updates the "current" status without fetching new data
-    const statusUpdateInterval = setInterval(() => {
-      console.log("Updating emergency pharmacy status");
-      // Re-trigger the onDataLoaded callback to refresh current/upcoming status
-      if (lastFetchTime) {
-        // This will re-evaluate which services are "current" based on current time
-        fetchEmergencyPharmacies();
-      }
-    }, 30 * 60 * 1000); // 30 minutes in milliseconds
-
     const smartRefreshTimeout = setupSmartRefresh();
 
     // Clean up intervals and timeouts on component unmount
     return () => {
       clearTimeout(smartRefreshTimeout);
-      clearInterval(statusUpdateInterval);
     };
-  }, []);
+  }, []); // Empty dependency array - only run on mount
 
-  // If there's an error, render nothing - parent will use fallback data
+  // If there's an error, render nothing - parent will handle error display
   if (error) {
     return null;
   }
@@ -207,12 +276,50 @@ export default function EmergencyPharmacyService({
           )}
           
           <div className="text-gray-400">
-            🔄 Automatische Updates: 6:00, 12:00, 18:00, 00:00 Uhr + alle 30 Min. Status-Check
+            🔄 Automatische Updates: 6:00, 12:00, 18:00, 00:00 Uhr | 🌐 Live-Daten von LAKT Thüringen
           </div>
           
-          {usingFallbackData && (
-            <div className="text-orange-600 font-semibold mt-1 p-2 bg-orange-50 rounded">
-              ⚠️ Aktuelle Daten konnten nicht abgerufen werden - Ersatzdaten werden angezeigt
+          {/* Display specific error messages */}
+          {error && (
+            <div className="text-red-600 font-semibold mt-1 p-3 bg-red-50 rounded border border-red-200">
+              <div className="flex items-start space-x-2">
+                <span className="text-red-600 text-xl">❌</span>
+                <div className="flex-1">
+                  <div className="font-semibold mb-2">Verbindung zur LAKT-API fehlgeschlagen</div>
+                  <div className="text-sm mb-3">{error}</div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={manualRefresh}
+                      disabled={isManualRefreshing}
+                      className="text-sm bg-red-100 hover:bg-red-200 px-3 py-1 rounded border border-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isManualRefreshing ? "Wird aktualisiert..." : "🔄 Erneut versuchen"}
+                    </button>
+                  </div>
+                  <div className="text-xs text-gray-600 mt-2">
+                    ⚠️ Ohne Verbindung zur LAKT-API können keine aktuellen Notdienst-Daten abgerufen werden.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+
+          
+          {lastFetchTime && (
+            <div className="text-green-600 font-medium mt-1 p-2 bg-green-50 rounded text-sm">
+              ✅ Live-Daten erfolgreich von LAKT (Landesapothekerkammer Thüringen) abgerufen
+              {(() => {
+                const cacheStats = getCacheStats();
+                const { begin, end } = getApiDateRange(14, true); // Silent mode for UI display
+                return (
+                  <>
+                    {cacheStats ? ` (Cache: ${cacheStats.age} Min alt)` : ''}
+                    <br />
+                    📅 Aktueller Datenbereich: {begin} bis {end} (dynamisch berechnet)
+                  </>
+                );
+              })()}
             </div>
           )}
         </div>
@@ -325,13 +432,8 @@ function getElementText(parent: Element, tagName: string): string {
   return element ? element.textContent || "" : "";
 }
 
-// Fallback data in case API fails
-function getFallbackData(): Pharmacy[] {
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  const dayAfterTomorrow = new Date();
-  dayAfterTomorrow.setDate(today.getDate() + 2);
-
-  return [];
-}
+// Note: Fallback data functionality removed
+// System now shows proper empty state when API fails:
+// - "Aktuelle Notdienste (0)" heading
+// - "Keine Apotheken gefunden" message  
+// - Clear error banner with retry option
