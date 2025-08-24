@@ -15,6 +15,7 @@ import {
   Search,
   Filter,
   Loader,
+  RefreshCw,
 } from "lucide-react";
 
 // Define pharmacy interface
@@ -69,6 +70,8 @@ export default function Notdienst() {
     lat: number;
     lng: number;
   } | null>(null);
+  const [refreshFunction, setRefreshFunction] = useState<(() => void) | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Update current time
   useEffect(() => {
@@ -133,6 +136,24 @@ export default function Notdienst() {
     setLoading(false);
   };
 
+  // Handle refresh function from EmergencyPharmacyService
+  const handleRefreshFunction = (refreshFn: () => void) => {
+    setRefreshFunction(() => refreshFn);
+  };
+
+  // Manual refresh handler
+  const handleManualRefresh = async () => {
+    if (refreshFunction && !isRefreshing) {
+      setIsRefreshing(true);
+      setLoading(true);
+      try {
+        await refreshFunction();
+      } finally {
+        setIsRefreshing(false);
+      }
+    }
+  };
+
   // Filter pharmacies based on search and location filter
   const filteredPharmacies = pharmacies.filter((pharmacy) => {
     const matchesSearch =
@@ -169,7 +190,10 @@ export default function Notdienst() {
       />
 
       {/* Load emergency pharmacy data */}
-      <EmergencyPharmacyService onDataLoaded={handleDataLoaded} />
+      <EmergencyPharmacyService 
+        onDataLoaded={handleDataLoaded} 
+        onRefreshFunction={handleRefreshFunction}
+      />
 
       <script
         type="application/ld+json"
@@ -247,6 +271,23 @@ export default function Notdienst() {
                   Aktuelle Notdienste{" "}
                   {!loading && `(${filteredPharmacies.length})`}
                 </h2>
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing || !refreshFunction}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isRefreshing 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-primary-100 hover:bg-primary-200 text-primary-700 hover:text-primary-800'
+                  }`}
+                  title="Notdienst-Daten manuell aktualisieren"
+                >
+                  <RefreshCw 
+                    className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                  />
+                  <span>
+                    {isRefreshing ? 'Aktualisiert...' : 'Aktualisieren'}
+                  </span>
+                </button>
               </div>
 
               {loading ? (
@@ -493,6 +534,47 @@ export default function Notdienst() {
                     <ExternalLink className="w-4 h-4 mr-2" />
                     ABDA - Notdienstsuche
                   </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Data Freshness Info */}
+      <section className="py-8 bg-green-50">
+        <div className="container-custom">
+          <div className="bg-white rounded-xl p-6 border border-green-200 max-w-4xl mx-auto">
+            <div className="flex items-start">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-4 flex-shrink-0 mt-2"></div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-green-600" />
+                  Aktuelle Notdienst-Daten
+                </h3>
+                <div className="text-sm text-gray-700 space-y-2">
+                  <p>
+                    Die Notdienst-Daten werden <strong>automatisch alle 6 Stunden</strong> aktualisiert: 
+                    um 6:00, 12:00, 18:00 und 24:00 Uhr.
+                  </p>
+                  <p>
+                    Zusätzlich prüft das System <strong>alle 30 Minuten</strong>, welche Apotheken 
+                    gerade im aktuellen Notdienst sind.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-green-700 font-medium">Live-Status</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <RefreshCw className="w-3 h-3 text-blue-500" />
+                      <span className="text-blue-700">6h Daten-Updates</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Clock className="w-3 h-3 text-purple-500" />
+                      <span className="text-purple-700">30min Status-Checks</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

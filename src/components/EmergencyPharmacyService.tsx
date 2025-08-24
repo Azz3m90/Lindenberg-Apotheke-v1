@@ -19,15 +19,31 @@ interface Pharmacy {
 
 interface EmergencyPharmacyServiceProps {
   onDataLoaded: (pharmacies: Pharmacy[]) => void;
+  onRefreshFunction?: (refreshFn: () => void) => void;
 }
 
 export default function EmergencyPharmacyService({
   onDataLoaded,
+  onRefreshFunction,
 }: EmergencyPharmacyServiceProps) {
   const [error, setError] = useState<string | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<Date | null>(null);
+  const [nextRefreshTime, setNextRefreshTime] = useState<Date | null>(null);
   const [usingFallbackData, setUsingFallbackData] = useState(false);
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const { showLoader, hideLoader } = useGlobalLoader();
+
+  // Manual refresh function
+  const manualRefresh = async () => {
+    if (isManualRefreshing) return; // Prevent multiple simultaneous refreshes
+    
+    setIsManualRefreshing(true);
+    try {
+      await fetchEmergencyPharmacies();
+    } finally {
+      setIsManualRefreshing(false);
+    }
+  };
 
   // Function to fetch emergency pharmacy data
   const fetchEmergencyPharmacies = async () => {
@@ -81,18 +97,84 @@ export default function EmergencyPharmacyService({
     }
   };
 
-  // Effect to fetch data on mount and set up refresh interval
+  // Expose refresh function to parent component
+  useEffect(() => {
+    if (onRefreshFunction) {
+      onRefreshFunction(manualRefresh);
+    }
+  }, [onRefreshFunction]);
+
+  // Effect to fetch data on mount and set up smart refresh intervals
   useEffect(() => {
     fetchEmergencyPharmacies();
 
-    // Set up automatic refresh every day
-    const refreshInterval = setInterval(() => {
-      console.log("Auto-refreshing emergency pharmacy data");
-      fetchEmergencyPharmacies();
-    }, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+    // Set up smart refresh system
+    const setupSmartRefresh = () => {
+      const now = new Date();
+      
+      // Calculate milliseconds until next refresh time (every 6 hours: 6 AM, 12 PM, 6 PM, 12 AM)
+      const nextRefreshHours = [6, 12, 18, 24]; // 24 = midnight (0)
+      const currentHour = now.getHours();
+      
+      let nextRefreshHour = nextRefreshHours.find(hour => hour > currentHour);
+      if (!nextRefreshHour) {
+        nextRefreshHour = nextRefreshHours[0] + 24; // Next day's 6 AM
+      }
+      
+      const nextRefresh = new Date(now);
+      nextRefresh.setHours(nextRefreshHour % 24, 0, 0, 0);
+      if (nextRefreshHour >= 24) {
+        nextRefresh.setDate(nextRefresh.getDate() + 1);
+      }
+      
+      const msUntilNextRefresh = nextRefresh.getTime() - now.getTime();
+      
+      console.log(`Next emergency pharmacy data refresh scheduled for: ${nextRefresh.toLocaleString('de-DE')}`);
+      
+      // Update state with next refresh time
+      setNextRefreshTime(nextRefresh);
+      
+      // Set timeout for next refresh
+      const initialTimeout = setTimeout(() => {
+        console.log("Scheduled emergency pharmacy data refresh");
+        fetchEmergencyPharmacies();
+        
+        // Set up regular 6-hour intervals after first scheduled refresh
+        const refreshInterval = setInterval(() => {
+          console.log("Auto-refreshing emergency pharmacy data (6-hour interval)");
+          fetchEmergencyPharmacies();
+          
+          // Update next refresh time
+          const now = new Date();
+          const nextInterval = new Date(now.getTime() + (6 * 60 * 60 * 1000));
+          setNextRefreshTime(nextInterval);
+        }, 6 * 60 * 60 * 1000); // 6 hours in milliseconds
+        
+        // Store interval ID for cleanup
+        return refreshInterval;
+      }, msUntilNextRefresh);
+      
+      return initialTimeout;
+    };
 
-    // Clean up interval on component unmount
-    return () => clearInterval(refreshInterval);
+    // Set up additional frequent status updates (every 30 minutes)
+    // This updates the "current" status without fetching new data
+    const statusUpdateInterval = setInterval(() => {
+      console.log("Updating emergency pharmacy status");
+      // Re-trigger the onDataLoaded callback to refresh current/upcoming status
+      if (lastFetchTime) {
+        // This will re-evaluate which services are "current" based on current time
+        fetchEmergencyPharmacies();
+      }
+    }, 30 * 60 * 1000); // 30 minutes in milliseconds
+
+    const smartRefreshTimeout = setupSmartRefresh();
+
+    // Clean up intervals and timeouts on component unmount
+    return () => {
+      clearTimeout(smartRefreshTimeout);
+      clearInterval(statusUpdateInterval);
+    };
   }, []);
 
   // If there's an error, render nothing - parent will use fallback data
@@ -100,20 +182,37 @@ export default function EmergencyPharmacyService({
     return null;
   }
 
-  // Component renders a small status indicator
+  // Component renders a comprehensive status indicator
   return (
-    <div className="text-xs text-gray-500 text-right mt-2">
+    <div className="text-xs text-gray-500 mt-2">
       {lastFetchTime && (
-        <div>
-          <span>
-            Daten aktualisiert: {formatDate(lastFetchTime)}{" "}
-            {formatTime(lastFetchTime)}
-            {isDevelopment() && " (Testmodus)"}
-          </span>
+        <div className="space-y-1">
+          <div className="flex justify-between items-center">
+            <span>
+              Daten aktualisiert: {formatDate(lastFetchTime)}{" "}
+              {formatTime(lastFetchTime)}
+              {isDevelopment() && " (Testmodus)"}
+            </span>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-green-600 font-medium">Live</span>
+            </div>
+          </div>
+          
+          {nextRefreshTime && (
+            <div className="text-gray-400">
+              Nächste Aktualisierung: {formatDate(nextRefreshTime)}{" "}
+              {formatTime(nextRefreshTime)}
+            </div>
+          )}
+          
+          <div className="text-gray-400">
+            🔄 Automatische Updates: 6:00, 12:00, 18:00, 00:00 Uhr + alle 30 Min. Status-Check
+          </div>
+          
           {usingFallbackData && (
-            <div className="text-orange-600 font-semibold mt-1">
-              ⚠️ Aktuelle Daten konnten nicht abgerufen werden - Ersatzdaten
-              werden angezeigt
+            <div className="text-orange-600 font-semibold mt-1 p-2 bg-orange-50 rounded">
+              ⚠️ Aktuelle Daten konnten nicht abgerufen werden - Ersatzdaten werden angezeigt
             </div>
           )}
         </div>
@@ -163,7 +262,8 @@ function parseXmlResponse(xmlText: string): Pharmacy[] {
     const address = `${street}, ${zip} ${city}`;
 
     // Determine if this is the current emergency service
-    const isCurrent = now.getDate() == startTime.getDate() && now < endTime;
+    // Handle overnight services properly (e.g., 6 PM today to 8 AM tomorrow)
+    const isCurrent = isServiceActive(now, startTime, endTime);
 
     pharmacies.push({
       id,
@@ -194,6 +294,29 @@ function parseXmlResponse(xmlText: string): Pharmacy[] {
   });
 
   return pharmacies;
+}
+
+// Helper function to determine if an emergency service is currently active
+function isServiceActive(currentTime: Date, startTime: Date, endTime: Date): boolean {
+  // Handle the simple case: service starts and ends on the same day
+  if (startTime.getDate() === endTime.getDate() && 
+      startTime.getMonth() === endTime.getMonth() && 
+      startTime.getFullYear() === endTime.getFullYear()) {
+    return currentTime >= startTime && currentTime <= endTime;
+  }
+  
+  // Handle overnight service: starts today, ends tomorrow (or later)
+  if (endTime > startTime) {
+    return currentTime >= startTime && currentTime <= endTime;
+  }
+  
+  // Handle edge case where end time appears to be before start time
+  // This might happen due to data formatting issues
+  // In this case, assume it's an overnight service
+  const nextDayEndTime = new Date(endTime);
+  nextDayEndTime.setDate(endTime.getDate() + 1);
+  
+  return currentTime >= startTime && currentTime <= nextDayEndTime;
 }
 
 // Helper function to get text content of an XML element
