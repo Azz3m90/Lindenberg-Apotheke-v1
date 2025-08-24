@@ -27,7 +27,15 @@ export default function Header() {
         { name: "Kontakt", href: "/kontakt" },
       ],
     },
-    // { name: "Selbsthilfegruppen", href: "/selbsthilfegruppen" },
+    {
+      name: "Selbsthilfegruppen",
+      href: "/selbsthilfegruppen",
+      submenu: [
+        { name: "Gruppen", href: "/selbsthilfegruppen/gruppen" },
+        { name: "Ihre Gruppe", href: "/selbsthilfegruppen/ihregruppe" },
+        { name: "Morbus Crohn", href: "/selbsthilfegruppen/morbuscrohn" },
+      ],
+    },
     {
       name: "Interessantes",
       href: "/interessantes",
