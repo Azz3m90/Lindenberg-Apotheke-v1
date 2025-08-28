@@ -139,9 +139,9 @@ const generateQRCodeDataURL = (url: string) => {
 export default function AppPage() {
   const [showQRModal, setShowQRModal] = useState(false);
   
-  const appStoreURL = "https://apps.apple.com/de/app/apotheke-vor-ort/id570527227";
-  const playStoreURL = "https://play.google.com/store/apps/details?id=de.wubv.apothekenapp";
-  const websiteURL = "https://www.lindenberg-apotheke.de/app/";
+  const appStoreURL = "https://apps.apple.com/de/app/gesund-de-e-rezept-apotheke/id1554260352";
+  const playStoreURL = "https://play.google.com/store/search?q=gesund.de+app&c=apps&utm_source=emea_Med";
+  const websiteURL = "https://www.gesund.de/apotheke/lindenberg-apotheke-98693-ilmenau";
 
   const jsonLd = {
     "@context": "https://schema.org",

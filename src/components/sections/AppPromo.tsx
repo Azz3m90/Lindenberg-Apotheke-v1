@@ -77,7 +77,7 @@ export default function AppPromo() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="https://apps.apple.com/de/app/apotheke-vor-ort/id123456789"
+                  href="https://apps.apple.com/de/app/gesund-de-e-rezept-apotheke/id1554260352"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center"
@@ -89,7 +89,7 @@ export default function AppPromo() {
                   </div>
                 </a>
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.apotheke.vor.ort"
+                  href="https://play.google.com/store/search?q=gesund.de+app&c=apps&utm_source=emea_Med"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center"
