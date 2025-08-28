@@ -77,7 +77,7 @@ export default function Hero() {
                 Jetzt anrufen
               </a>
               <Link
-                href="/termin"
+                href="/kontakt"
                 className="btn btn-secondary flex items-center justify-center text-lg px-8 py-4"
               >
                 <Calendar className="w-5 h-5 mr-2" />
