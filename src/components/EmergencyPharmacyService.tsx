@@ -251,81 +251,8 @@ export default function EmergencyPharmacyService({
     return null;
   }
 
-  // Component renders a comprehensive status indicator
-  return (
-    <div className="text-xs text-gray-500 mt-2">
-      {lastFetchTime && (
-        <div className="space-y-1">
-          <div className="flex justify-between items-center">
-            <span>
-              Daten aktualisiert: {formatDate(lastFetchTime)}{" "}
-              {formatTime(lastFetchTime)}
-              {isDevelopment() && " (Testmodus)"}
-            </span>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-green-600 font-medium">Live</span>
-            </div>
-          </div>
-          
-          {nextRefreshTime && (
-            <div className="text-gray-400">
-              Nächste Aktualisierung: {formatDate(nextRefreshTime)}{" "}
-              {formatTime(nextRefreshTime)}
-            </div>
-          )}
-          
-          <div className="text-gray-400">
-            🔄 Automatische Updates: 6:00, 12:00, 18:00, 00:00 Uhr | 🌐 Live-Daten von LAKT Thüringen
-          </div>
-          
-          {/* Display specific error messages */}
-          {error && (
-            <div className="text-red-600 font-semibold mt-1 p-3 bg-red-50 rounded border border-red-200">
-              <div className="flex items-start space-x-2">
-                <span className="text-red-600 text-xl">❌</span>
-                <div className="flex-1">
-                  <div className="font-semibold mb-2">Verbindung zur LAKT-API fehlgeschlagen</div>
-                  <div className="text-sm mb-3">{error}</div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={manualRefresh}
-                      disabled={isManualRefreshing}
-                      className="text-sm bg-red-100 hover:bg-red-200 px-3 py-1 rounded border border-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isManualRefreshing ? "Wird aktualisiert..." : "🔄 Erneut versuchen"}
-                    </button>
-                  </div>
-                  <div className="text-xs text-gray-600 mt-2">
-                    ⚠️ Ohne Verbindung zur LAKT-API können keine aktuellen Notdienst-Daten abgerufen werden.
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-
-          
-          {lastFetchTime && (
-            <div className="text-green-600 font-medium mt-1 p-2 bg-green-50 rounded text-sm">
-              ✅ Live-Daten erfolgreich von LAKT (Landesapothekerkammer Thüringen) abgerufen
-              {(() => {
-                const cacheStats = getCacheStats();
-                const { begin, end } = getApiDateRange(14, true); // Silent mode for UI display
-                return (
-                  <>
-                    {cacheStats ? ` (Cache: ${cacheStats.age} Min alt)` : ''}
-                    <br />
-                    📅 Aktueller Datenbereich: {begin} bis {end} (dynamisch berechnet)
-                  </>
-                );
-              })()}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  // Component renders nothing - status display removed for production
+  return null;
 }
 
 // Helper functions moved to apiUtils.ts
