@@ -11,7 +11,7 @@ import {
   MapPin,
   ExternalLink,
   Calendar,
-  Navigation,
+  // Navigation,
   Search,
   Filter,
   Loader,
@@ -92,21 +92,21 @@ export default function Notdienst() {
   }, []);
 
   // Get user location if available
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.log("Error getting location:", error);
-        }
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setUserLocation({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //       },
+  //       (error) => {
+  //         console.log("Error getting location:", error);
+  //       }
+  //     );
+  //   }
+  // }, []);
 
   // Handle data loaded from API
   const handleDataLoaded = useCallback((data: Pharmacy[]) => {
@@ -319,12 +319,12 @@ export default function Notdienst() {
                             <MapPin className="w-4 h-4 mr-2" />
                             <span className="text-sm">{pharmacy.address}</span>
                           </div>
-                          <div className="flex items-center text-gray-600">
+                          {/* <div className="flex items-center text-gray-600">
                             <Navigation className="w-4 h-4 mr-2" />
                             <span className="text-sm">
                               {pharmacy.distance || "Entfernung berechnen..."}
                             </span>
-                          </div>
+                          </div> */}
                         </div>
                         {pharmacy.status === "current" && (
                           <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">

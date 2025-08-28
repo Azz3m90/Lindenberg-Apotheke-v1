@@ -167,9 +167,9 @@ export default function EmergencyInfo() {
                           <MapPin className="w-4 h-4 mr-2 mt-0.5 text-red-500 flex-shrink-0" />
                           <div className="flex-1">
                             <span className="text-sm">{pharmacy.address}</span>
-                            {pharmacy.distance && pharmacy.distance !== "Entfernung berechnen..." && (
+                            {/* {pharmacy.distance && pharmacy.distance !== "Entfernung berechnen..." && (
                               <span className="text-xs text-gray-500 ml-2">• {pharmacy.distance}</span>
-                            )}
+                            )} */}
                           </div>
                         </div>
                         

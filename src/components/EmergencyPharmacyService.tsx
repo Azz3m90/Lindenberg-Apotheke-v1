@@ -311,7 +311,7 @@ function parseXmlResponse(xmlText: string): Pharmacy[] {
       lat,
       lng,
       // Distance will be calculated later if needed
-      distance: "Entfernung berechnen...",
+      // distance: "Entfernung berechnen...",
     });
   }
 
