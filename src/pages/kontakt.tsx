@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NextSeo } from "next-seo";
 import Layout from "../components/Layout";
+import Modal from "../components/Modal";
+import { Turnstile } from "@marsidev/react-turnstile";
+import emailjs from "@emailjs/browser";
 import {
   Phone,
   Mail,
@@ -12,9 +15,11 @@ import {
   User,
   CheckCircle,
   MessageCircle,
+  Shield,
+  RefreshCw,
 } from "lucide-react";
 
-interface FormData {
+interface ContactFormData {
   name: string;
   email: string;
   phone: string;
@@ -23,8 +28,15 @@ interface FormData {
   privacy: boolean;
 }
 
+interface ModalState {
+  isOpen: boolean;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+}
+
 export default function Kontakt() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     phone: "",
@@ -34,9 +46,123 @@ export default function Kontakt() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: '',
+  });
+
+  // Initialize EmailJS
+  useEffect(() => {
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (publicKey && publicKey !== 'your_public_key_here') {
+      emailjs.init(publicKey);
+    }
+  }, []);
+
+  // Turnstile callbacks
+  const onTurnstileSuccess = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const onTurnstileError = useCallback(() => {
+    setModal({
+      isOpen: true,
+      type: 'error',
+      title: 'CAPTCHA-Fehler',
+      message: 'Die CAPTCHA-Überprüfung ist fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.',
+    });
+    setTurnstileToken(null);
+  }, []);
+
+  const onTurnstileExpire = useCallback(() => {
+    setTurnstileToken(null);
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'CAPTCHA abgelaufen',
+      message: 'Das CAPTCHA ist abgelaufen. Bitte lösen Sie es erneut.',
+    });
+  }, []);
+
+  // Send email via EmailJS
+  const sendEmail = async (data: ContactFormData) => {
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const adminTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const autoReplyTemplateId = process.env.NEXT_PUBLIC_EMAILJS_AUTOREPLY_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+    // Check if EmailJS is configured
+    if (!serviceId || !adminTemplateId || !publicKey || 
+        adminTemplateId === 'your_template_id_here' || 
+        publicKey === 'your_public_key_here') {
+      console.log('EmailJS not fully configured, skipping email send');
+      return true; // Return true to not block form submission
+    }
+
+    try {
+      const templateParams = {
+        from_name: data.name,
+        from_email: data.email,
+        from_phone: data.phone || 'Nicht angegeben',
+        subject: data.subject,
+        message: data.message,
+        to_email: process.env.NEXT_PUBLIC_CONTACT_EMAIL_TO || 'kontakt@lindenberg-apotheke.de',
+        reply_to: data.email,
+        current_date: new Date().toLocaleString('de-DE', { 
+          timeZone: 'Europe/Berlin',
+          dateStyle: 'full',
+          timeStyle: 'short'
+        }),
+      };
+
+      // Send admin notification email
+      const adminResponse = await emailjs.send(
+        serviceId,
+        adminTemplateId,
+        templateParams
+      );
+      console.log('Admin notification sent successfully:', adminResponse);
+
+      // Send auto-reply if template is configured
+      if (autoReplyTemplateId && autoReplyTemplateId !== 'your_template_id_here') {
+        try {
+          const autoReplyResponse = await emailjs.send(
+            serviceId,
+            autoReplyTemplateId,
+            templateParams
+          );
+          console.log('Auto-reply sent successfully:', autoReplyResponse);
+        } catch (autoReplyError) {
+          console.error('Failed to send auto-reply (non-blocking):', autoReplyError);
+          // Don't fail the whole process if auto-reply fails
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Failed to send admin email:', error);
+      // Don't block form submission if email fails
+      return true; 
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate CAPTCHA token
+    if (!turnstileToken) {
+      setModal({
+        isOpen: true,
+        type: 'warning',
+        title: 'CAPTCHA erforderlich',
+        message: 'Bitte bestätigen Sie, dass Sie kein Roboter sind, indem Sie das CAPTCHA lösen.',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -45,12 +171,18 @@ export default function Kontakt() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ 
+          ...formData, 
+          turnstileToken: turnstileToken 
+        }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
+        // Send email notification
+        await sendEmail(formData);
+        
         setIsSubmitted(true);
         // Reset form
         setFormData({
@@ -61,13 +193,37 @@ export default function Kontakt() {
           message: "",
           privacy: false,
         });
+        setTurnstileToken(null);
+        
+        // Show success modal
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Nachricht erfolgreich gesendet!',
+          message: 'Vielen Dank für Ihre Nachricht. Wir haben sie erhalten und melden uns schnellstmöglich bei Ihnen zurück.',
+        });
+        
+        // Auto-redirect after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
       } else {
         // Handle error
-        alert(result.error || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Fehler beim Senden',
+          message: result.error || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+        });
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Netzwerkfehler',
+        message: 'Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -85,6 +241,10 @@ export default function Kontakt() {
         type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
+
+  const closeModal = useCallback(() => {
+    setModal((prev) => ({ ...prev, isOpen: false }));
+  }, []);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -418,6 +578,21 @@ export default function Kontakt() {
                     />
                   </div>
 
+                  {/* Cloudflare Turnstile CAPTCHA */}
+                  <div className="flex justify-center my-4">
+                    <Turnstile
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                      onSuccess={onTurnstileSuccess}
+                      onError={onTurnstileError}
+                      onExpire={onTurnstileExpire}
+                      options={{
+                        theme: 'light',
+                        size: 'normal',
+                        language: 'de'
+                      }}
+                    />
+                  </div>
+
                   <div className="flex items-start space-x-3">
                     <input
                       type="checkbox"
@@ -548,6 +723,17 @@ export default function Kontakt() {
           </div>
         </div>
       </section>
+
+      {/* Modal for messages */}
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={closeModal}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        autoClose={modal.type === 'success'}
+        autoCloseDelay={5000}
+      />
     </Layout>
   );
 }

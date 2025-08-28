@@ -13,6 +13,15 @@ interface ContactFormData {
   id: string;
 }
 
+interface TurnstileResponse {
+  success: boolean;
+  challenge_ts?: string;
+  hostname?: string;
+  'error-codes'?: string[];
+  action?: string;
+  cdata?: string;
+}
+
 const DATA_FILE = path.join(process.cwd(), 'data', 'contact-forms.json');
 
 // Ensure data directory exists
@@ -45,18 +54,54 @@ const generateId = () => {
   return Date.now().toString() + Math.random().toString(36).substr(2, 9);
 };
 
+// Verify Cloudflare Turnstile token
+const verifyTurnstileToken = async (token: string): Promise<boolean> => {
+  const secretKey = process.env.TURNSTILE_SECRET_KEY!;
+  
+  try {
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
+    });
+
+    const data: TurnstileResponse = await response.json();
+    return data.success;
+  } catch (error) {
+    console.error('Error verifying Turnstile token:', error);
+    return false;
+  }
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
     try {
-      const { name, email, phone, subject, message, privacy } = req.body;
+      const { name, email, phone, subject, message, privacy, turnstileToken } = req.body;
 
       // Validation
       if (!name || !email || !subject || !message || !privacy) {
         return res.status(400).json({ 
           error: 'Alle Pflichtfelder müssen ausgefüllt werden.' 
+        });
+      }
+
+      // Turnstile CAPTCHA validation
+      if (!turnstileToken) {
+        return res.status(400).json({ 
+          error: 'Sicherheitsprüfung fehlgeschlagen. Bitte bestätigen Sie, dass Sie kein Roboter sind.' 
+        });
+      }
+
+      // Verify Turnstile token
+      const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
+      if (!isTurnstileValid) {
+        return res.status(400).json({ 
+          error: 'CAPTCHA-Überprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.' 
         });
       }
 

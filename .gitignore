@@ -7,3 +7,8 @@
 *.log
 /package-lock.json
 /TEMP/
+
+# Environment variables
+.env.local
+.env.production
+.env*.local

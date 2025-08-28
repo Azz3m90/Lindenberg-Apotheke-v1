@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { NextSeo } from 'next-seo';
 import Layout from '../../components/Layout';
 // Import icons individually to avoid webpack issues
-import { Mail, Phone, User, MessageCircle, Calendar } from 'lucide-react';
+import { Mail, Phone, User, MessageCircle, Calendar, Search, Filter, ChevronDown, X } from 'lucide-react';
 
 // Define custom icons for problematic imports to avoid webpack issues
 const Trash2 = ({ className, ...props }: any) => (
@@ -46,6 +46,14 @@ export default function AdminContactForms() {
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name' | 'email'>('newest');
+  const [showFilters, setShowFilters] = useState(false);
 
   const ADMIN_PASSWORD = 'lindenberg2024'; // In production, use proper authentication
 
@@ -113,9 +121,94 @@ export default function AdminContactForms() {
     }
   };
 
+  // Get unique subjects for filter dropdown
+  const uniqueSubjects = useMemo(() => {
+    const subjects = new Set(forms.map(form => form.subject));
+    return Array.from(subjects).sort();
+  }, [forms]);
+
+  // Filter and sort forms
+  const filteredForms = useMemo(() => {
+    let filtered = [...forms];
+
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(form => 
+        form.name.toLowerCase().includes(query) ||
+        form.email.toLowerCase().includes(query) ||
+        form.message.toLowerCase().includes(query) ||
+        form.phone?.toLowerCase().includes(query) ||
+        form.subject.toLowerCase().includes(query)
+      );
+    }
+
+    // Subject filter
+    if (selectedSubject !== 'all') {
+      filtered = filtered.filter(form => form.subject === selectedSubject);
+    }
+
+    // Date range filter
+    if (dateFrom) {
+      const fromDate = new Date(dateFrom);
+      fromDate.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(form => new Date(form.submittedAt) >= fromDate);
+    }
+
+    if (dateTo) {
+      const toDate = new Date(dateTo);
+      toDate.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(form => new Date(form.submittedAt) <= toDate);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime();
+        case 'oldest':
+          return new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'email':
+          return a.email.localeCompare(b.email);
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [forms, searchQuery, selectedSubject, dateFrom, dateTo, sortBy]);
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedSubject('all');
+    setDateFrom('');
+    setDateTo('');
+    setSortBy('newest');
+  };
+
+  // Highlight search query in text
+  const highlightText = (text: string) => {
+    if (!searchQuery || !text) return text;
+    
+    const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
+    return (
+      <span>
+        {parts.map((part, index) => 
+          part.toLowerCase() === searchQuery.toLowerCase() ? (
+            <mark key={index} className="bg-yellow-200">{part}</mark>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
+
   const exportToCSV = () => {
     const headers = ['Datum', 'Name', 'E-Mail', 'Telefon', 'Betreff', 'Nachricht'];
-    const rows = forms.map(form => [
+    const rows = filteredForms.map(form => [
       new Date(form.submittedAt).toLocaleString('de-DE'),
       form.name,
       form.email,
@@ -188,12 +281,21 @@ export default function AdminContactForms() {
       <section className="py-16 lg:py-24">
         <div className="container-custom">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="heading-xl">Kontaktformulare ({forms.length})</h1>
+            <h1 className="heading-xl">
+              Kontaktformulare ({filteredForms.length}{filteredForms.length !== forms.length && ` von ${forms.length}`})
+            </h1>
             <div className="flex space-x-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="btn btn-secondary flex items-center"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filter {showFilters ? 'ausblenden' : 'anzeigen'}
+              </button>
               <button
                 onClick={exportToCSV}
                 className="btn btn-secondary flex items-center"
-                disabled={forms.length === 0}
+                disabled={filteredForms.length === 0}
               >
                 <Download className="w-4 h-4 mr-2" />
                 CSV Export
@@ -216,6 +318,141 @@ export default function AdminContactForms() {
             </div>
           </div>
 
+          {/* Quick Stats */}
+          {forms.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
+                <div className="text-sm text-gray-600">Heute</div>
+                <div className="text-2xl font-bold text-primary-600">
+                  {forms.filter(f => {
+                    const today = new Date();
+                    const formDate = new Date(f.submittedAt);
+                    return formDate.toDateString() === today.toDateString();
+                  }).length}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
+                <div className="text-sm text-gray-600">Diese Woche</div>
+                <div className="text-2xl font-bold text-primary-600">
+                  {forms.filter(f => {
+                    const weekAgo = new Date();
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return new Date(f.submittedAt) >= weekAgo;
+                  }).length}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
+                <div className="text-sm text-gray-600">Diesen Monat</div>
+                <div className="text-2xl font-bold text-primary-600">
+                  {forms.filter(f => {
+                    const now = new Date();
+                    const formDate = new Date(f.submittedAt);
+                    return formDate.getMonth() === now.getMonth() && formDate.getFullYear() === now.getFullYear();
+                  }).length}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
+                <div className="text-sm text-gray-600">Gesamt</div>
+                <div className="text-2xl font-bold text-primary-600">{forms.length}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                {/* Search */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Suche
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Name, E-Mail, Nachricht..."
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Subject Filter */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Betreff
+                  </label>
+                  <select
+                    value={selectedSubject}
+                    onChange={(e) => setSelectedSubject(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="all">Alle Betreff</option>
+                    {uniqueSubjects.map(subject => (
+                      <option key={subject} value={subject}>{subject}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Date From */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Von Datum
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+
+                {/* Date To */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bis Datum
+                  </label>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700">
+                    Sortieren:
+                  </label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="newest">Neueste zuerst</option>
+                    <option value="oldest">Älteste zuerst</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="email">E-Mail (A-Z)</option>
+                  </select>
+                </div>
+
+                {(searchQuery || selectedSubject !== 'all' || dateFrom || dateTo) && (
+                  <button
+                    onClick={clearFilters}
+                    className="flex items-center text-sm text-red-600 hover:text-red-800"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Filter zurücksetzen
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {loading && (
             <div className="text-center py-8">
               <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
@@ -236,8 +473,22 @@ export default function AdminContactForms() {
             </div>
           )}
 
+          {!loading && forms.length > 0 && filteredForms.length === 0 && (
+            <div className="text-center py-16">
+              <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-xl text-gray-600">Keine Formulare gefunden</p>
+              <p className="text-sm text-gray-500 mt-2">Versuchen Sie, die Filter anzupassen</p>
+              <button
+                onClick={clearFilters}
+                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Filter zurücksetzen
+              </button>
+            </div>
+          )}
+
           <div className="space-y-6">
-            {forms.map((form) => (
+            {filteredForms.map((form) => (
               <div key={form.id} className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-3">
@@ -245,7 +496,7 @@ export default function AdminContactForms() {
                       <User className="w-5 h-5 text-primary-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{form.name}</h3>
+                      <h3 className="font-semibold text-gray-900">{highlightText(form.name)}</h3>
                       <p className="text-sm text-gray-500 flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
                         {new Date(form.submittedAt).toLocaleString('de-DE')}
@@ -263,25 +514,25 @@ export default function AdminContactForms() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="flex items-center space-x-2">
                     <Mail className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{form.email}</span>
+                    <span className="text-sm">{highlightText(form.email)}</span>
                   </div>
                   {form.phone && (
                     <div className="flex items-center space-x-2">
                       <Phone className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm">{form.phone}</span>
+                      <span className="text-sm">{highlightText(form.phone)}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="mb-4">
                   <div className="text-sm font-medium text-gray-700 mb-1">Betreff:</div>
-                  <div className="text-sm text-gray-900">{form.subject}</div>
+                  <div className="text-sm text-gray-900">{highlightText(form.subject)}</div>
                 </div>
 
                 <div>
                   <div className="text-sm font-medium text-gray-700 mb-1">Nachricht:</div>
                   <div className="text-sm text-gray-900 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
-                    {form.message}
+                    {highlightText(form.message)}
                   </div>
                 </div>
               </div>
