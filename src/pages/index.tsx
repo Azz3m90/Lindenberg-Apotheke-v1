@@ -6,8 +6,14 @@ import AboutPreview from "../components/sections/AboutPreview";
 import EmergencyInfo from "../components/sections/EmergencyInfo";
 import AppPromo from "../components/sections/AppPromo";
 import ContactCTA from "../components/sections/ContactCTA";
+import EmergencyPharmacyService from "../components/EmergencyPharmacyService";
 
 export default function Home() {
+  // This ensures pharmacy data is loaded and cached
+  const handlePharmacyDataLoaded = () => {
+    // Data is now cached, EmergencyInfo component will pick it up
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Pharmacy",
@@ -117,6 +123,9 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* Load emergency pharmacy data */}
+      <EmergencyPharmacyService onDataLoaded={handlePharmacyDataLoaded} />
 
       {/* Page Content */}
       <Hero />

@@ -8,30 +8,24 @@ import {
   ExternalLink,
   Calendar,
 } from "lucide-react";
+import { getCachedPharmacyData } from "../../utils/cacheUtils";
 
-// Mock emergency pharmacy data - in real app, this would come from an API
-const emergencyPharmacies = [
-  {
-    name: "Rathaus-Apotheke Ilmenau",
-    address: "Marktplatz 1, 98693 Ilmenau",
-    phone: "03677-123456",
-    distance: "0.8 km",
-    date: new Date().toLocaleDateString("de-DE"),
-  },
-  {
-    name: "Stadt-Apotheke Ilmenau",
-    address: "Bahnhofstraße 15, 98693 Ilmenau",
-    phone: "03677-654321",
-    distance: "1.2 km",
-    date: new Date(Date.now() + 86400000).toLocaleDateString("de-DE"), // Tomorrow
-  },
-];
+interface Pharmacy {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  distance?: string;
+  date: string;
+  timeStart: string;
+  timeEnd: string;
+  status: "current" | "upcoming";
+}
 
 export default function EmergencyInfo() {
   const [currentTime, setCurrentTime] = useState<string>("");
-  const [currentEmergency, setCurrentEmergency] = useState(
-    emergencyPharmacies[0]
-  );
+  const [todayPharmacies, setTodayPharmacies] = useState<Pharmacy[]>([]);
+  const [currentDate, setCurrentDate] = useState<string>("");
 
   useEffect(() => {
     const updateTime = () => {
@@ -42,10 +36,51 @@ export default function EmergencyInfo() {
           minute: "2-digit",
         })
       );
+      setCurrentDate(
+        now.toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      );
     };
 
     updateTime();
     const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load all emergency pharmacies for today from cached data
+  useEffect(() => {
+    const loadTodayPharmacies = () => {
+      const cachedData = getCachedPharmacyData();
+      if (cachedData && cachedData.data.length > 0) {
+        const today = new Date().toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        
+        // Filter all pharmacies for today's date
+        const todaysList = cachedData.data.filter((p: Pharmacy) => {
+          return p.date === today;
+        });
+        
+        // Sort by status (current first) then by time
+        todaysList.sort((a: Pharmacy, b: Pharmacy) => {
+          if (a.status === "current" && b.status !== "current") return -1;
+          if (a.status !== "current" && b.status === "current") return 1;
+          return a.timeStart.localeCompare(b.timeStart);
+        });
+        
+        setTodayPharmacies(todaysList);
+      }
+    };
+
+    loadTodayPharmacies();
+    
+    // Reload every minute to check for changes
+    const interval = setInterval(loadTodayPharmacies, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -68,12 +103,17 @@ export default function EmergencyInfo() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Current Emergency Pharmacy */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          {/* All Emergency Pharmacies Today */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden lg:col-span-1">
             <div className="bg-red-600 text-white p-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold">Notdienst heute</h3>
+                <div>
+                  <h3 className="text-xl font-semibold">Notdienst heute</h3>
+                  {currentDate && (
+                    <div className="text-sm opacity-90 mt-1">{currentDate}</div>
+                  )}
+                </div>
                 <div className="text-right">
                   <div className="text-sm opacity-90">Aktuelle Zeit</div>
                   <div className="text-lg font-bold">{currentTime}</div>
@@ -82,56 +122,110 @@ export default function EmergencyInfo() {
             </div>
 
             <div className="p-6">
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-gray-900 text-lg mb-2">
-                    {currentEmergency.name}
-                  </h4>
-                  <div className="flex items-start text-gray-600 mb-3">
-                    <MapPin className="w-4 h-4 mr-2 mt-0.5 text-red-500" />
-                    <span className="text-sm">{currentEmergency.address}</span>
+              {todayPharmacies.length > 0 ? (
+                <div className="space-y-4">
+                  {/* Display count */}
+                  <div className="text-sm text-gray-600 font-medium">
+                    {todayPharmacies.length} {todayPharmacies.length === 1 ? 'Apotheke' : 'Apotheken'} im Notdienst heute
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center">
-                    <Phone className="w-5 h-5 mr-3 text-red-500" />
-                    <div>
-                      <div className="font-semibold text-gray-900">
-                        Notdienst-Telefon
+                  
+                  {/* Scrollable list if more than 3 pharmacies */}
+                  <div className={`space-y-3 ${todayPharmacies.length > 3 ? 'max-h-96 overflow-y-auto pr-2 pharmacy-scroll' : ''}`}>
+                    {todayPharmacies.map((pharmacy, index) => (
+                      <div 
+                        key={pharmacy.id} 
+                        className={`p-4 rounded-lg border ${
+                          pharmacy.status === 'current' 
+                            ? 'bg-red-50 border-red-200' 
+                            : 'bg-gray-50 border-gray-200'
+                        }`}
+                      >
+                        {/* Status Badge */}
+                        <div className="flex items-center justify-between mb-2">
+                          {pharmacy.status === 'current' ? (
+                            <div className="inline-flex items-center px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded-full">
+                              <div className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></div>
+                              JETZT AKTIV
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center px-2 py-1 bg-gray-500 text-white text-xs font-semibold rounded-full">
+                              AB {pharmacy.timeStart} UHR
+                            </div>
+                          )}
+                          {index === 0 && todayPharmacies.length > 1 && (
+                            <span className="text-xs text-gray-500">#{index + 1}</span>
+                          )}
+                        </div>
+                        
+                        {/* Pharmacy Name */}
+                        <h4 className="font-semibold text-gray-900 mb-2">
+                          {pharmacy.name}
+                        </h4>
+                        
+                        {/* Address */}
+                        <div className="flex items-start text-gray-600 mb-2">
+                          <MapPin className="w-4 h-4 mr-2 mt-0.5 text-red-500 flex-shrink-0" />
+                          <div className="flex-1">
+                            <span className="text-sm">{pharmacy.address}</span>
+                            {pharmacy.distance && pharmacy.distance !== "Entfernung berechnen..." && (
+                              <span className="text-xs text-gray-500 ml-2">• {pharmacy.distance}</span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Time */}
+                        <div className="flex items-center text-gray-600 mb-3">
+                          <Clock className="w-4 h-4 mr-2 text-yellow-600 flex-shrink-0" />
+                          <span className="text-sm">
+                            {pharmacy.timeStart} - {pharmacy.timeEnd} Uhr
+                          </span>
+                        </div>
+                        
+                        {/* Phone */}
+                        <a
+                          href={`tel:${pharmacy.phone.replace(/[\s-]/g, "")}`}
+                          className="flex items-center justify-center w-full px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <Phone className="w-4 h-4 mr-2 text-red-500" />
+                          <span className="font-semibold text-gray-900">
+                            {pharmacy.phone}
+                          </span>
+                        </a>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        24 Stunden erreichbar
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                  <a
-                    href={`tel:${currentEmergency.phone.replace(/[\s-]/g, "")}`}
-                    className="btn btn-primary"
-                  >
-                    {currentEmergency.phone}
-                  </a>
-                </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <Clock className="w-5 h-5 mr-2 text-yellow-600" />
-                    <div>
-                      <div className="font-medium text-yellow-800">
-                        Notdienst-Zeiten
-                      </div>
-                      <div className="text-sm text-yellow-700">
-                        Heute 18:00 Uhr bis morgen 8:00 Uhr
-                      </div>
-                    </div>
+                  <Link href="/notdienst" className="btn btn-secondary w-full">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Vollständiger Notdienstkalender
+                  </Link>
+                </div>
+              ) : todayPharmacies.length === 0 && currentTime ? (
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                    <p className="text-gray-700 font-semibold mb-2">Keine Notdienst-Daten für heute</p>
+                    <p className="text-gray-600 text-sm">
+                      Bitte prüfen Sie den vollständigen Kalender oder rufen Sie 116 117 an
+                    </p>
                   </div>
+                  <Link href="/notdienst" className="btn btn-primary w-full">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Zum Notdienstkalender
+                  </Link>
                 </div>
-
-                <Link href="/notdienst" className="btn btn-secondary w-full">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Notdienstkalender anzeigen
-                </Link>
-              </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <div className="inline-block w-8 h-8 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mb-4"></div>
+                    <p className="text-gray-600">Notdienst-Daten werden geladen...</p>
+                  </div>
+                  <Link href="/notdienst" className="btn btn-secondary w-full">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Notdienstkalender anzeigen
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
