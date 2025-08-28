@@ -28,15 +28,6 @@ export default function Header() {
       ],
     },
     {
-      name: "Selbsthilfegruppen",
-      href: "/selbsthilfegruppen",
-      submenu: [
-        { name: "Gruppen", href: "/selbsthilfegruppen/gruppen" },
-        { name: "Ihre Gruppe", href: "/selbsthilfegruppen/ihregruppe" },
-        { name: "Morbus Crohn", href: "/selbsthilfegruppen/morbuscrohn" },
-      ],
-    },
-    {
       name: "Interessantes",
       href: "/interessantes",
       submenu: [
@@ -67,7 +58,7 @@ export default function Header() {
         <div className="container-custom flex items-center justify-center space-x-4">
           <AlertCircle className="w-4 h-4" />
           <span>
-            Notdienst heute: Rathaus-Apotheke Ilmenau | ☎ 03677-888888
+            Notdienst-Hotline: 116 117 | ☎ 03677-888888
           </span>
           <Link href="/notdienst" className="underline hover:no-underline">
             Alle Notdienste →
@@ -165,7 +156,7 @@ export default function Header() {
               ))}
 
               {/* CTA Button */}
-              <Link href="/termin" className="btn btn-primary">
+              <Link href="/kontakt" className="btn btn-primary">
                 Termin buchen
               </Link>
             </nav>
@@ -237,7 +228,7 @@ export default function Header() {
                   {/* Mobile CTA */}
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <Link
-                      href="/termin"
+                      href="/kontakt"
                       className="btn btn-primary w-full"
                       onClick={() => setMobileMenuOpen(false)}
                     >

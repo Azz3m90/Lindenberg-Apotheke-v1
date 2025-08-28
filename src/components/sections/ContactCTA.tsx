@@ -90,7 +90,7 @@ export default function ContactCTA() {
               Individuelle Beratungstermine ohne Wartezeit
             </p>
             <Link
-              href="/termin"
+              href="/kontakt"
               className="btn bg-white text-yellow-600 hover:bg-gray-100 w-full text-lg"
             >
               <Calendar className="w-4 h-4 mr-2" />
@@ -135,7 +135,7 @@ export default function ContactCTA() {
               </p>
               <div className="space-y-2">
                 <Link
-                  href="/kontakt"
+                  href="uber-uns/kontakt"
                   className="block text-secondary-400 hover:text-secondary-300 font-medium"
                 >
                   → Kontaktformular

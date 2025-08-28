@@ -122,8 +122,8 @@ export default function Interessantes() {
                           <div className="font-bold">medizini</div>
                         </div>
                       </div> */}
-                      <div className="text-blue-600 hover:text-blue-800 font-medium">
-                        Alle Magazine ansehen →
+                      <div className="text-blue-600 hover:text-blue-800 font-medium hyphens-manual">
+                        Alle Magazine&shy; ansehen →
                       </div>
                     </div>
                   </div>

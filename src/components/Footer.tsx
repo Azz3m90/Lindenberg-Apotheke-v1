@@ -28,9 +28,17 @@ export default function Footer() {
     { name: "Leistungen", href: "/leistungen" },
     { name: "Notdienst", href: "/notdienst" },
     { name: "Kontakt", href: "/uber-uns/kontakt" },
-    { name: "Termin buchen", href: "/termin" },
+    { name: "Termin buchen", href: "/kontakt" },
     { name: "Apotheken-App", href: "/app" },
-    { name: "Selbsthilfegruppen", href: "/selfHelpGroups" }
+    {
+      name: "Selbsthilfegruppen",
+      href: "/selbsthilfegruppen",
+      // submenu: [
+      //   { name: "Gruppen", href: "/selbsthilfegruppen/gruppen" },
+      //   { name: "Ihre Gruppe", href: "/selbsthilfegruppen/ihregruppe" },
+      //   { name: "Morbus Crohn", href: "/selbsthilfegruppen/morbuscrohn" },
+      // ],
+    },
   ];
 
   const legalLinks = [
