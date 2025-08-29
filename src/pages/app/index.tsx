@@ -150,7 +150,7 @@ export default function AppPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MobileApplication",
-    name: "Apotheke vor Ort - Lindenberg-Apotheke",
+    name: "Gesund.de - Lindenberg-Apotheke",
     description: "Die innovative Apotheken-App für iPhone und Android bietet direkten Kontakt zur Lindenberg-Apotheke mit Rezept-Service, Notdienst-Finder und umfassender Arzneimittel-Datenbank.",
     applicationCategory: "HealthApplication",
     operatingSystem: ["iOS", "Android"],
@@ -178,7 +178,7 @@ export default function AppPage() {
     <Layout>
       <NextSeo
         title="Apotheken-App | Lindenberg-Apotheke Ilmenau"
-        description="Die innovative Apotheken-App 'Apotheke vor Ort' für iPhone und Android. Rezept-Service, Notdienst-Finder, Arzneimittel-Datenbank und mehr. Kostenlos downloaden!"
+        description="Die innovative Apotheken-App 'gesund.de - E-Rezept, Apotheke' für iPhone und Android. Rezept-Service, Notdienst-Finder, Arzneimittel-Datenbank und mehr. Kostenlos downloaden!"
         canonical="https://www.lindenberg-apotheke.de/app/"
         openGraph={{
           title: "Apotheken-App | Lindenberg-Apotheke Ilmenau",
@@ -216,7 +216,7 @@ export default function AppPage() {
               {/* Badge */}
               <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-full border border-white/10">
                 <Sparkles className="w-5 h-5 mr-3 text-yellow-300" />
-                <span className="font-semibold text-lg">Apotheke vor Ort - Ihre Stamm-Apotheke</span>
+                <span className="font-semibold text-lg">gesund.de - E-Rezept, Apotheke</span>
               </div>
 
               {/* Headline */}
@@ -265,7 +265,7 @@ export default function AppPage() {
                 </div>
                 <div className="text-white">
                   <div className="text-3xl font-bold">4.8<span className="text-xl">/5</span></div>
-                  <div className="text-sm text-white/70">(2.450+ Bewertungen)</div>
+                  {/* <div className="text-sm text-white/70">(2.450+ Bewertungen)</div> */}
                 </div>
               </div>
 
@@ -569,7 +569,7 @@ export default function AppPage() {
                       Jetzt kostenlos downloaden
                     </h3>
                     <p className="text-gray-600 text-lg">
-                      Suchen Sie nach der <strong className="text-primary-600">"Apotheke vor Ort"</strong> in Ihrem App Store
+                      Suchen Sie nach der <strong className="text-primary-600">"gesund.de - E-Rezept, Apotheke"</strong> in Ihrem App Store
                     </p>
                   </div>
                   
@@ -617,7 +617,7 @@ export default function AppPage() {
           </div>
 
           {/* Bottom CTA */}
-          <div className="mt-24 text-center">
+          {/* <div className="mt-24 text-center">
             <div className="inline-flex items-center space-x-6 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full px-8 py-4 text-white shadow-2xl">
               <div className="flex items-center space-x-2">
                 {[...Array(5)].map((_, i) => (
@@ -628,9 +628,9 @@ export default function AppPage() {
                 ))}
               </div>
               <div className="text-xl font-bold">4.8/5</div>
-              <div className="text-white/90">von 2.450+ Nutzern empfohlen</div>
+              <div className="text-white/90">von +20k Nutzern empfohlen</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 

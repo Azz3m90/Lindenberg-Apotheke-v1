@@ -84,7 +84,7 @@ export default function AppPromo() {
             <div>
               <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-full border border-white/10 mb-8">
                 <Sparkles className="w-5 h-5 mr-3 text-yellow-300" />
-                <span className="font-semibold text-lg">Apotheke vor Ort - Ihre Stamm-Apotheke</span>
+                <span className="font-semibold text-lg">gesund.de - E-Rezept, Apotheke</span>
               </div>
               
               <h2 className="text-5xl lg:text-7xl font-bold leading-tight mb-8">
@@ -96,7 +96,7 @@ export default function AppPromo() {
               </h2>
               
               <p className="text-xl lg:text-2xl text-white/80 leading-relaxed mb-8">
-                Mit der kostenlosen <strong className="text-white">"Apotheke vor Ort"</strong> App haben Sie unsere
+                Mit der kostenlosen <strong className="text-white">"Gesund.de"</strong> App haben Sie unsere
                 Services jederzeit griffbereit – inklusive Rezept-Vorbestellung
                 und Notdienst-Finder.
               </p>
@@ -135,7 +135,7 @@ export default function AppPromo() {
                 </div>
                 <div className="text-white">
                   <span className="text-2xl font-bold">4.8/5</span>
-                  <span className="text-sm text-white/70 ml-2">(2.450+ Bewertungen)</span>
+                  {/* <span className="text-sm text-white/70 ml-2">(2.450+ Bewertungen)</span> */}
                 </div>
               </div>
 

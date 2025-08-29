@@ -141,7 +141,8 @@ export default function ContactCTA() {
                   → Kontaktformular
                 </Link>
                 <Link
-                  href="/app"
+                  href="https://www.gesund.de/apotheke/lindenberg-apotheke-98693-ilmenau"
+                  target="true"
                   className="block text-secondary-400 hover:text-secondary-300 font-medium"
                 >
                   → Rezept per App vorbestellen
