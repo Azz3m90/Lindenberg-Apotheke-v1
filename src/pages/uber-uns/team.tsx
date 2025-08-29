@@ -74,7 +74,7 @@ const teamMembers = [
 
 const teamStats = [
   { number: "4", label: "Teammitglieder", icon: Users },
-  { number: "75+", label: "Jahre Gesamterfahrung", icon: Award },
+  { number: "30+", label: "Jahre Gesamterfahrung", icon: Award },
   { number: "12", label: "Fortbildungen pro Jahr", icon: GraduationCap },
   { number: "100%", label: "Kundenzufriedenheit", icon: Heart },
 ];

@@ -66,10 +66,10 @@ export default function Notdienst() {
   const [filterLocation, setFilterLocation] = useState("all");
   const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  // const [userLocation, setUserLocation] = useState<{
+  //   lat: number;
+  //   lng: number;
+  // } | null>(null);
   const [refreshFunction, setRefreshFunction] = useState<(() => void) | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -111,30 +111,36 @@ export default function Notdienst() {
   // Handle data loaded from API
   const handleDataLoaded = useCallback((data: Pharmacy[]) => {
     // Calculate distances if user location is available
-    if (userLocation) {
-      data = data.map((pharmacy) => {
-        const lat = parseFloat(pharmacy.lat);
-        const lng = parseFloat(pharmacy.lng);
+    
+    let enrichedData = data.map((pharmacy) => ({
+      ...pharmacy,
+      id: uuidv4(),
+    }));
 
-        if (!isNaN(lat) && !isNaN(lng)) {
-          const distance = calculateDistance(
-            userLocation.lat,
-            userLocation.lng,
-            lat,
-            lng
-          );
-          return {
-            ...pharmacy,
-            distance: formatDistance(distance),
-          };
-        }
-        return pharmacy;
-      });
-    }
+    // if (userLocation) {
+    //   data = data.map((pharmacy) => {
+    //     const lat = parseFloat(pharmacy.lat);
+    //     const lng = parseFloat(pharmacy.lng);
 
-    setPharmacies(data);
+    //     if (!isNaN(lat) && !isNaN(lng)) {
+    //       const distance = calculateDistance(
+    //         userLocation.lat,
+    //         userLocation.lng,
+    //         lat,
+    //         lng
+    //       );
+    //       return {
+    //         ...pharmacy,
+    //         distance: formatDistance(distance),
+    //       };
+    //     }
+    //     return pharmacy;
+    //   });
+    // }
+
+    setPharmacies(enrichedData);
     setLoading(false);
-  }, [userLocation]);
+  }, []);
 
   // Handle refresh function from EmergencyPharmacyService
   const handleRefreshFunction = useCallback((refreshFn: () => void) => {
@@ -307,7 +313,7 @@ export default function Notdienst() {
                 <div className="space-y-4">
                   {filteredPharmacies.map((pharmacy) => (
                     <div
-                      key={uuidv4()}
+                      key={pharmacy.id}
                       className="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
                     >
                       <div className="flex items-start justify-between mb-4">

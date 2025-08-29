@@ -135,7 +135,7 @@ export default function ContactCTA() {
               </p>
               <div className="space-y-2">
                 <Link
-                  href="uber-uns/kontakt"
+                  href="kontakt"
                   className="block text-secondary-400 hover:text-secondary-300 font-medium"
                 >
                   → Kontaktformular

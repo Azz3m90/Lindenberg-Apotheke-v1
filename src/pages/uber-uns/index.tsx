@@ -223,7 +223,7 @@ export default function UberUns() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="flex items-center">
                     <CheckCircle className="w-5 h-5 mr-3 text-secondary-500" />
-                    <span className="text-sm">Über 70 Jahre Erfahrung</span>
+                    <span className="text-sm">Über 30 Jahre Erfahrung</span>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="w-5 h-5 mr-3 text-secondary-500" />
@@ -263,7 +263,7 @@ export default function UberUns() {
               <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary-600 mb-1">
-                    70+
+                    30+
                   </div>
                   <div className="text-sm text-gray-600">Jahre Erfahrung</div>
                 </div>

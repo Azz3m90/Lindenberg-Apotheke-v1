@@ -27,8 +27,7 @@ export default function Footer() {
     { name: "Über uns", href: "/uber-uns" },
     { name: "Leistungen", href: "/leistungen" },
     { name: "Notdienst", href: "/notdienst" },
-    { name: "Kontakt", href: "/uber-uns/kontakt" },
-    { name: "Termin buchen", href: "/kontakt" },
+    { name: "Kontakt", href: "/kontakt" },
     { name: "Apotheken-App", href: "/app" },
     {
       name: "Selbsthilfegruppen",
