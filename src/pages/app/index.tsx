@@ -26,6 +26,10 @@ import {
   Compass,
   Book,
   Zap,
+  Sparkles,
+  ArrowRight,
+  Play,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -190,125 +194,168 @@ export default function AppPage() {
       />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white py-16 lg:py-24 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
+      <section className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-primary-800 text-white overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-br from-secondary-500 to-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+          <div className="absolute -bottom-32 left-1/2 transform -translate-x-1/2 w-80 h-80 bg-gradient-to-br from-yellow-400 to-primary-500 rounded-full mix-blend-multiply filter blur-xl opacity-25 animate-pulse delay-2000"></div>
         </div>
 
-        <div className="relative container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div>
-                <div className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 rounded-full text-sm font-semibold mb-6">
-                  <Smartphone className="w-4 h-4 mr-2" />
-                  Apotheke vor Ort - Ihre Stamm-Apotheke
-                </div>
-                <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 100 0 L 0 0 0 100' fill='none' stroke='white' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)' /%3E%3C/svg%3E")`,
+          }}></div>
+        </div>
+
+        <div className="relative container-custom py-20 lg:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <div className="space-y-10">
+              {/* Badge */}
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-full border border-white/10">
+                <Sparkles className="w-5 h-5 mr-3 text-yellow-300" />
+                <span className="font-semibold text-lg">Apotheke vor Ort - Ihre Stamm-Apotheke</span>
+              </div>
+
+              {/* Headline */}
+              <div className="space-y-6">
+                <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                   Die innovative
                   <br />
-                  <span className="text-yellow-300">Apotheken-App</span>
+                  <span className="bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300 bg-clip-text text-transparent animate-pulse">
+                    Apotheken-App
+                  </span>
                 </h1>
-                <p className="text-xl text-primary-100 leading-relaxed">
-                  Des Wort & Bild Verlages für <strong>iPhone® und Android™</strong> bietet 
+                <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
+                  Des <span className="font-semibold text-white">Wort & Bild Verlages</span> für <strong className="text-yellow-300">iPhone® und Android™</strong> bietet 
                   unseren Patienten einen bequemen, zeitsparenden und kostenlosen Service 
                   sowie den direkten Kontakt zur Lindenberg-Apotheke.
                 </p>
               </div>
 
-              <div className="bg-white bg-opacity-10 rounded-xl p-6">
-                <h3 className="text-lg font-semibold mb-4 text-yellow-300">Nach dem Download:</h3>
-                <p className="text-primary-100">
-                  Wählen Sie die <strong>Lindenberg-Apotheke</strong> als Ihre Wunschapotheke aus. 
-                  Sie wird als Stamm-Apotheke definiert und bietet dann eine Fülle an 
-                  praxisnahen Funktionen und Serviceleistungen.
-                </p>
+              {/* Instructions Card */}
+              <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 rounded-2xl"></div>
+                <div className="relative">
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-full flex items-center justify-center mr-4">
+                      <ArrowRight className="w-4 h-4 text-black font-bold" />
+                    </div>
+                    <h3 className="text-xl font-bold text-yellow-300">Nach dem Download:</h3>
+                  </div>
+                  <p className="text-white/90 text-lg leading-relaxed">
+                    Wählen Sie die <strong className="text-white">Lindenberg-Apotheke</strong> als Ihre Wunschapotheke aus. 
+                    Sie wird als Stamm-Apotheke definiert und bietet dann eine Fülle an 
+                    praxisnahen Funktionen und Serviceleistungen.
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center">
+              {/* Rating */}
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-2">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                      className="w-7 h-7 fill-yellow-400 text-yellow-400 drop-shadow-sm"
                     />
                   ))}
                 </div>
-                <div className="text-primary-100">
-                  <span className="font-bold">4.8/5</span>
-                  <span className="text-sm ml-1">(2.450+ Bewertungen)</span>
+                <div className="text-white">
+                  <div className="text-3xl font-bold">4.8<span className="text-xl">/5</span></div>
+                  <div className="text-sm text-white/70">(2.450+ Bewertungen)</div>
                 </div>
               </div>
 
+              {/* Download Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
                   href={appStoreURL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center text-lg px-6 py-3 rounded-xl transition-all duration-300"
+                  className="group bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl hover:shadow-2xl"
                 >
-                  <Apple className="w-6 h-6 mr-3" />
+                  <Apple className="w-8 h-8 mr-4" />
                   <div className="text-left">
-                    <div className="text-xs">Download im</div>
-                    <div className="font-semibold">App Store</div>
+                    <div className="text-sm text-gray-300">Download im</div>
+                    <div className="text-lg font-bold">App Store</div>
                   </div>
                 </a>
                 <a
                   href={playStoreURL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center text-lg px-6 py-3 rounded-xl transition-all duration-300"
+                  className="group bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl hover:shadow-2xl"
                 >
-                  <Android className="w-6 h-6 mr-3" />
+                  <Android className="w-8 h-8 mr-4" />
                   <div className="text-left">
-                    <div className="text-xs">Jetzt bei</div>
-                    <div className="font-semibold">Google Play</div>
+                    <div className="text-sm text-gray-300">Jetzt bei</div>
+                    <div className="text-lg font-bold">Google Play</div>
                   </div>
                 </a>
               </div>
             </div>
 
-            <div className="relative flex justify-center">
-              <div className="w-64 bg-gray-900 rounded-3xl p-2 shadow-2xl">
-                <div className="bg-white rounded-2xl overflow-hidden">
-                  <img
-                    src="/app-screenshot.svg"
-                    alt="Lindenberg-Apotheke App Screenshot"
-                    className="w-full h-auto"
-                    width={240}
-                    height={520}
-                  />
+            {/* Right Content - Phone Mockup */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Glowing backdrop */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-[3rem] blur-3xl opacity-30 scale-110"></div>
+                
+                {/* Phone mockup */}
+                <div className="relative w-80 bg-gradient-to-br from-gray-900 to-black rounded-[3rem] p-3 shadow-2xl">
+                  <div className="bg-white rounded-[2.5rem] overflow-hidden relative">
+                    {/* Status bar */}
+                    <div className="absolute top-0 left-0 right-0 h-8 bg-black rounded-t-[2.5rem] z-10">
+                      <div className="flex justify-center pt-2">
+                        <div className="w-20 h-1 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+                    <img
+                      src="/app-screenshot.svg"
+                      alt="Lindenberg-Apotheke App Screenshot"
+                      className="w-full h-auto"
+                      width={320}
+                      height={650}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* QR Code */}
-              <div className="absolute -bottom-8 -right-8 bg-white p-4 rounded-xl shadow-xl border-4 border-white">
-                <div className="text-center">
+                {/* Floating QR Code */}
+                <div className="absolute -bottom-12 -right-12 bg-white p-6 rounded-2xl shadow-2xl border-4 border-white transform rotate-3 hover:rotate-0 transition-transform duration-300">
                   <button 
                     onClick={() => setShowQRModal(true)}
-                    className="group transition-all duration-300 hover:scale-105"
+                    className="group text-center"
                   >
-                    <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center mb-2 overflow-hidden">
+                    <div className="w-28 h-28 bg-gray-50 rounded-xl flex items-center justify-center mb-3 overflow-hidden group-hover:scale-105 transition-transform">
                       <img 
                         src={generateQRCodeDataURL(websiteURL)}
                         alt="QR Code zum App Download"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="text-xs text-gray-600 font-medium group-hover:text-primary-600">
+                    <div className="text-sm text-gray-700 font-bold group-hover:text-primary-600 transition-colors">
                       QR-Code scannen
                     </div>
                     <div className="text-xs text-gray-500">zum Download</div>
                   </button>
                 </div>
+
+
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Bottom wave */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-20 text-white" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor"></path>
+          </svg>
         </div>
       </section>
 
@@ -365,53 +412,64 @@ export default function AppPage() {
       )}
 
       {/* Features Section */}
-      <section className="py-16 lg:py-24">
+      <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-50 to-blue-50/30">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="heading-lg mb-4">
-              Alle <span className="text-primary-600">Funktionen</span> im Überblick
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center px-4 py-2 bg-primary-100 rounded-full text-primary-700 font-semibold mb-6">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Alle Funktionen im Überblick
+            </div>
+            <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Eine App, <span className="text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text">unendliche</span> Möglichkeiten
             </h2>
-            <p className="text-lead max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Die App bietet eine Fülle an praxisnahen Funktionen und Serviceleistungen 
               für eine optimale Betreuung durch Ihre Stamm-Apotheke.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {appFeatures.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
                 <div
                   key={index}
-                  className={`p-6 rounded-xl border group hover:shadow-lg transition-all duration-300 ${
+                  className={`group relative p-8 rounded-3xl transition-all duration-500 hover:scale-105 ${
                     feature.highlight
-                      ? "bg-primary-50 border-primary-200 hover:bg-primary-100"
-                      : "bg-white border-gray-200 hover:border-primary-200"
+                      ? "bg-gradient-to-br from-primary-500 to-secondary-500 text-white shadow-2xl shadow-primary-500/25"
+                      : "bg-white border-2 border-gray-100 hover:border-primary-200 hover:shadow-xl hover:shadow-primary-100/50"
                   }`}
                 >
                   {feature.highlight && (
-                    <div className="inline-flex items-center px-2 py-1 bg-primary-600 text-white text-xs font-semibold rounded-full mb-3">
-                      <Zap className="w-3 h-3 mr-1" />
-                      Highlight
+                    <div className="absolute -top-3 -right-3 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                      ⭐ Highlight
                     </div>
                   )}
 
                   <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${
+                    className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${
                       feature.highlight
-                        ? "bg-primary-600 text-white"
-                        : "bg-primary-100 text-primary-600 group-hover:bg-primary-600 group-hover:text-white"
-                    } transition-colors duration-300`}
+                        ? "bg-white/20 backdrop-blur-sm text-white"
+                        : "bg-gradient-to-br from-primary-100 to-secondary-100 text-primary-600 group-hover:from-primary-500 group-hover:to-secondary-500 group-hover:text-white"
+                    }`}
                   >
-                    <IconComponent className="w-6 h-6" />
+                    <IconComponent className="w-8 h-8" />
                   </div>
 
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className={`text-xl font-bold mb-3 ${
+                    feature.highlight ? "text-white" : "text-gray-900"
+                  }`}>
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className={`text-sm leading-relaxed ${
+                    feature.highlight ? "text-white/90" : "text-gray-600"
+                  }`}>
                     {feature.description}
                   </p>
+
+                  {!feature.highlight && (
+                    <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary-500/5 to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  )}
                 </div>
               );
             })}
@@ -420,98 +478,157 @@ export default function AppPage() {
       </section>
 
       {/* Languages Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="heading-lg mb-4">
-              In <span className="text-primary-600">8 Sprachen</span> verfügbar
+      <section className="py-24 lg:py-32 bg-gradient-to-br from-primary-600 via-secondary-600 to-primary-700 text-white relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-20 right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-80 h-80 bg-yellow-300/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="relative container-custom">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-8">
+              <Globe className="w-5 h-5 mr-3" />
+              <span className="font-semibold text-lg">Mehrsprachig verfügbar</span>
+            </div>
+            <h2 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+              In <span className="text-yellow-300">8 Sprachen</span> verfügbar
             </h2>
-            <p className="text-lead max-w-3xl mx-auto">
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Gesundheitsinformationen und Rat & Hilfe-Beiträge stehen in verschiedenen 
               Sprachen zur Verfügung – für bessere Verständlichkeit und Zugänglichkeit.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {languageList.map((language, index) => (
-              <div key={index} className="bg-white rounded-xl p-4 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
-                <div className="text-2xl mb-2">{language.split(' ')[0]}</div>
-                <div className="font-medium text-gray-700">{language.split(' ')[1]}</div>
+              <div key={index} className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl blur-sm group-hover:blur-none transition-all duration-300"></div>
+                <div className="relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 group-hover:scale-105">
+                  <div className="text-4xl mb-3">{language.split(' ')[0]}</div>
+                  <div className="font-semibold text-lg text-white">{language.split(' ')[1]}</div>
+                </div>
               </div>
             ))}
+          </div>
+
+          <div className="text-center mt-16">
+            <div className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+              <CheckCircle className="w-5 h-5 mr-2 text-green-300" />
+              <span className="text-white/90">Alle Funktionen in allen Sprachen verfügbar</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 lg:py-24">
+      <section className="py-24 lg:py-32 bg-white">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="heading-lg mb-6">
-                Warum die <span className="text-primary-600">App nutzen</span>?
-              </h2>
-              <p className="text-lead mb-8">
-                Die App ist kostenlos und bietet direkten Zugang zu allen Services 
-                der Lindenberg-Apotheke. Sparen Sie Zeit und haben Sie Ihre Gesundheit 
-                jederzeit im Blick.
-              </p>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div>
+                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full text-green-700 font-semibold mb-6">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Warum die App nutzen?
+                </div>
+                <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                  Die App ist
+                  <br />
+                  <span className="text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">kostenlos</span>
+                </h2>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Die App bietet direkten Zugang zu allen Services der Lindenberg-Apotheke. 
+                  Sparen Sie Zeit und haben Sie Ihre Gesundheit jederzeit im Blick.
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 gap-4">
                 {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                  <div key={index} className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors duration-300">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <CheckCircle className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-gray-700">{benefit}</span>
+                    <span className="text-lg text-gray-800 font-medium">{benefit}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-2xl p-8">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Download className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Jetzt kostenlos downloaden
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Suchen Sie nach der <strong>"Apotheke vor Ort"</strong> in Ihrem App Store
-                </p>
-                
-                <div className="space-y-3">
-                  <a
-                    href={appStoreURL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center py-3 rounded-xl"
-                  >
-                    <Apple className="w-5 h-5 mr-2" />
-                    <span>Download für iPhone</span>
-                  </a>
-                  <a
-                    href={playStoreURL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full btn bg-black hover:bg-gray-800 text-white border-0 flex items-center justify-center py-3 rounded-xl"
-                  >
-                    <Android className="w-5 h-5 mr-2" />
-                    <span>Download für Android</span>
-                  </a>
-                </div>
-                
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <button 
-                    onClick={() => setShowQRModal(true)}
-                    className="flex items-center justify-center mx-auto text-primary-600 hover:text-primary-700 font-medium"
-                  >
-                    <QrCode className="w-5 h-5 mr-2" />
-                    <span>QR-Code anzeigen</span>
-                  </button>
+            <div className="relative">
+              {/* Background decorations */}
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-3xl blur-xl opacity-50"></div>
+              <div className="absolute -inset-2 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-2xl blur-lg opacity-30"></div>
+              
+              <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
+                <div className="text-center space-y-8">
+                  <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl shadow-xl">
+                    <Download className="w-12 h-12 text-white" />
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-3">
+                      Jetzt kostenlos downloaden
+                    </h3>
+                    <p className="text-gray-600 text-lg">
+                      Suchen Sie nach der <strong className="text-primary-600">"Apotheke vor Ort"</strong> in Ihrem App Store
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <a
+                      href={appStoreURL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group w-full bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl hover:shadow-2xl"
+                    >
+                      <Apple className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="text-sm text-gray-300">Download für</div>
+                        <div className="text-lg font-bold">iPhone</div>
+                      </div>
+                    </a>
+                    <a
+                      href={playStoreURL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group w-full bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl hover:shadow-2xl"
+                    >
+                      <Android className="w-6 h-6 mr-4" />
+                      <div className="text-left">
+                        <div className="text-sm text-gray-300">Download für</div>
+                        <div className="text-lg font-bold">Android</div>
+                      </div>
+                    </a>
+                  </div>
+                  
+                  <div className="pt-6 border-t border-gray-200">
+                    <button 
+                      onClick={() => setShowQRModal(true)}
+                      className="group flex items-center justify-center mx-auto text-primary-600 hover:text-primary-700 font-semibold text-lg transition-colors duration-300"
+                    >
+                      <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center mr-3 group-hover:bg-primary-200 transition-colors duration-300">
+                        <QrCode className="w-5 h-5" />
+                      </div>
+                      <span>QR-Code anzeigen</span>
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Bottom CTA */}
+          <div className="mt-24 text-center">
+            <div className="inline-flex items-center space-x-6 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full px-8 py-4 text-white shadow-2xl">
+              <div className="flex items-center space-x-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-6 h-6 fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+              </div>
+              <div className="text-xl font-bold">4.8/5</div>
+              <div className="text-white/90">von 2.450+ Nutzern empfohlen</div>
             </div>
           </div>
         </div>
