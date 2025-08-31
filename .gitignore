@@ -12,3 +12,4 @@
 .env.local
 .env.production
 .env*.local
+package copy.json
