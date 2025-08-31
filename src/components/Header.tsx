@@ -55,7 +55,7 @@ export default function Header() {
     <>
       {/* Emergency Banner */}
       <div className="bg-red-600 text-white py-2 text-center text-sm font-medium">
-        <div className="container-custom flex items-center justify-center space-x-4">
+        <div className="container-custom flex flex-wrap items-center justify-center space-x-4">
           <AlertCircle className="w-4 h-4" />
           <span>
             Notdienst-Hotline: 116 117 | ☎ 03677-888888
@@ -70,8 +70,8 @@ export default function Header() {
         {/* Top Info Bar */}
         <div className="bg-gray-50 border-b border-gray-200">
           <div className="container-custom py-2">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600">
-              <div className="flex items-center space-x-4 mb-2 sm:mb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center flex-wrap sm:justify-between text-sm text-gray-600">
+              <div className="flex items-center sm:space-x-4 mb-2 sm:mb-0 flex-wrap justify-between">
                 <div className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>Krankenhausstr. 26, 98693 Ilmenau</span>
@@ -81,7 +81,7 @@ export default function Header() {
                   <span>Mo-Fr: 7-18 Uhr | Sa: 9-12 Uhr</span>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-between space-x-4 flex-wrap md:w-auto w-100">
                 <a
                   href="tel:+493677888888"
                   className="phone-link flex items-center"
@@ -114,12 +114,12 @@ export default function Header() {
                   width={180}
                   height={48}
                 />
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">
+                {/* <div className="hidden lg:block shrink">
+                  <h1 className="md:text-xl font-bold text-gray-900">
                     Lindenberg-Apotheke
                   </h1>
                   <p className="text-sm text-gray-600">Ilmenau • Dr. H. Danz</p>
-                </div>
+                </div> */}
               </Link>
             </div>
 

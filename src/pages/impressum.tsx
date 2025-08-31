@@ -56,7 +56,7 @@ export default function Impressum() {
                     <h3 className="text-lg font-semibold mb-4">Apotheke</h3>
                     <div className="space-y-3 text-gray-700">
                       <p className="font-semibold text-lg">Lindenberg-Apotheke</p>
-                      <p>Inhaber: Dr. Stefan Danz</p>
+                      <p>Inhaber: Dr. H Danz</p>
                       <div className="flex items-start">
                         <MapPin className="w-4 h-4 mr-2 mt-1 text-primary-600" />
                         <div>

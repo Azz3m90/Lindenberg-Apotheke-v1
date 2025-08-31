@@ -216,7 +216,7 @@ export default function AppPage() {
               {/* Badge */}
               <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-full border border-white/10">
                 <Sparkles className="w-5 h-5 mr-3 text-yellow-300" />
-                <span className="font-semibold text-lg">gesund.de - E-Rezept, Apotheke</span>
+                <span className="font-semibold text-lg">Lindenberg-Apotheke - Ihre Stamm-Apotheke</span>
               </div>
 
               {/* Headline */}

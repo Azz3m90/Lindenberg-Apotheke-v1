@@ -123,7 +123,7 @@ export default function Datenschutz() {
               <div className="bg-gray-50 rounded-lg p-6">
                 <p className="text-lg font-semibold mb-4">Lindenberg-Apotheke Ilmenau</p>
                 <div className="space-y-2 text-gray-700">
-                  <p>Dr. Stefan Danz</p>
+                  <p>Dr. H Danz</p>
                   <p>Krankenhausstr. 26</p>
                   <p>98693 Ilmenau</p>
                   <div className="flex items-center mt-4">

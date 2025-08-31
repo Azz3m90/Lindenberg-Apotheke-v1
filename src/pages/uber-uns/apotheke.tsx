@@ -412,14 +412,14 @@ export default function UeberUnsApotheke() {
                 >
                   <div
                     className={`w-1/2 ${
-                      index % 2 === 0 ? "pr-8 text-right" : "pl-8 text-left"
+                      index % 2 === 0 ? "pr-8" : "pl-8 text-left"
                     }`}
                   >
                     <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
                       <div className="text-2xl font-bold text-primary-600 mb-2">
                         {item.year}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      <h3 className="text-medium lg:text-lg font-semibold text-gray-900 mb-2">
                         {item.title}
                       </h3>
                       <p className="text-gray-600 text-sm">

@@ -5,24 +5,26 @@
     <rect x="20" y="50" width="200" height="420" fill="#ffffff" rx="8"/>
 
     <!-- App Header -->
-    <rect x="30" y="65" width="180" height="40" fill="#dc2626" rx="4"/>
-    <text x="120" y="87" text-anchor="middle" font-size="14" fill="white" font-weight="bold">Lindenberg-Apotheke</text>
+    <rect x="20" y="30" width="200" height="60" fill="#dc2626" rx="8"/>
+    <text x="120" y="50" text-anchor="middle" font-size="14" fill="white" font-weight="bold">Meine Stammapotheke</text>
+    <text x="120" y="70" text-anchor="middle" font-size="16" fill="white" font-weight="bold">Lindenberg-Apotheke</text>
+    
 
     <!-- Menu Items -->
     <rect x="30" y="120" width="180" height="30" fill="#f3f4f6" rx="4"/>
-    <text x="40" y="138" font-size="12" fill="#374151">📋 Rezept vorbestellen</text>
+    <text x="40" y="138" font-size="12" fill="#374151">📋 Rezept einreichen</text>
 
     <rect x="30" y="160" width="180" height="30" fill="#f3f4f6" rx="4"/>
     <text x="40" y="178" font-size="12" fill="#374151">🩺 Notdienst finden</text>
 
     <rect x="30" y="200" width="180" height="30" fill="#f3f4f6" rx="4"/>
-    <text x="40" y="218" font-size="12" fill="#374151">💊 Medikamente</text>
+    <text x="40" y="218" font-size="12" fill="#374151">🛒 Apotheke-shop</text>
 
     <rect x="30" y="240" width="180" height="30" fill="#f3f4f6" rx="4"/>
     <text x="40" y="258" font-size="12" fill="#374151">📞 Kontakt</text>
 
     <!-- Bottom -->
     <text x="120" y="420" text-anchor="middle" font-size="10" fill="#6b7280">
-    Apotheke vor Ort App
+    gesund.de - E-Rezept, Apotheke
     </text>
 </svg>
