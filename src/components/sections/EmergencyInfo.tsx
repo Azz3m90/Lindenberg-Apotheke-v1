@@ -214,9 +214,9 @@ export default function EmergencyInfo() {
                               AB {pharmacy.timeStart} UHR
                             </div>
                           )}
-                          {index === 0 && todayPharmacies.length > 1 && (
+                          {/* {index === 0 && todayPharmacies.length > 1 && (
                             <span className="text-xs text-gray-500">#{index + 1}</span>
-                          )}
+                          )} */}
                         </div>
                         
                         {/* Pharmacy Name */}
