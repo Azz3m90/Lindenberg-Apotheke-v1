@@ -65,7 +65,7 @@ export default function EmergencyInfo() {
         // Debug: Log available dates
         console.log('Today\'s date:', today);
         console.log('Current time:', now.toLocaleTimeString("de-DE"));
-        console.log('Available pharmacy dates:', [...new Set(cachedData.data.map((p: Pharmacy) => p.date))]);
+        console.log('Available pharmacy dates:', Array.from(new Set(cachedData.data.map((p: Pharmacy) => p.date))));
         
         // First, try to find pharmacies marked as currently active
         const currentActive = cachedData.data.filter((p: Pharmacy) => p.status === "current");
