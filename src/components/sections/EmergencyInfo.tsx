@@ -55,25 +55,67 @@ export default function EmergencyInfo() {
     const loadTodayPharmacies = () => {
       const cachedData = getCachedPharmacyData();
       if (cachedData && cachedData.data.length > 0) {
-        const today = new Date().toLocaleDateString("de-DE", {
+        const now = new Date();
+        const today = now.toLocaleDateString("de-DE", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
         });
         
-        // Filter all pharmacies for today's date
+        // Debug: Log available dates
+        console.log('Today\'s date:', today);
+        console.log('Current time:', now.toLocaleTimeString("de-DE"));
+        console.log('Available pharmacy dates:', [...new Set(cachedData.data.map((p: Pharmacy) => p.date))]);
+        
+        // First, try to find pharmacies marked as currently active
+        const currentActive = cachedData.data.filter((p: Pharmacy) => p.status === "current");
+        if (currentActive.length > 0) {
+          console.log('Found current active pharmacies:', currentActive.length);
+          setTodayPharmacies(currentActive);
+          return;
+        }
+        
+        // If no current active, filter pharmacies that start today
         const todaysList = cachedData.data.filter((p: Pharmacy) => {
           return p.date === today;
         });
         
+        // Also check for pharmacies that might have started yesterday but are still active
+        // (overnight services that end today)
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toLocaleDateString("de-DE", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        
+        const overnightPharmacies = cachedData.data.filter((p: Pharmacy) => {
+          // Check if this pharmacy started yesterday and might still be active
+          if (p.date === yesterdayStr) {
+            // If end time is less than start time, it's an overnight service
+            const endHour = parseInt(p.timeEnd.split(':')[0]);
+            const currentHour = now.getHours();
+            // If it ends at 08:00 or later and current time is before that, it's still active
+            if (endHour <= 12 && currentHour < endHour) {
+              return true;
+            }
+          }
+          return false;
+        });
+        
+        // Combine today's pharmacies with overnight ones
+        const allRelevant = [...todaysList, ...overnightPharmacies];
+        
         // Sort by status (current first) then by time
-        todaysList.sort((a: Pharmacy, b: Pharmacy) => {
+        allRelevant.sort((a: Pharmacy, b: Pharmacy) => {
           if (a.status === "current" && b.status !== "current") return -1;
           if (a.status !== "current" && b.status === "current") return 1;
           return a.timeStart.localeCompare(b.timeStart);
         });
         
-        setTodayPharmacies(todaysList);
+        console.log('Total relevant pharmacies for display:', allRelevant.length);
+        setTodayPharmacies(allRelevant);
       }
     };
 

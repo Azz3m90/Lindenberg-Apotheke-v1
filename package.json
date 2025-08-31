@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:static": "BUILD_STATIC=true next build",
+    "build:static": "next build",
+    "build:netlify": "next build",
     "start": "next start",
     "lint": "next lint"
   },

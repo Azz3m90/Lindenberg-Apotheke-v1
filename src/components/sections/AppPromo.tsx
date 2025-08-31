@@ -34,7 +34,7 @@ const Android = ({ className }: { className?: string }) => (
 
 // QR Code data URL for app download
 const generateQRCodeDataURL = (url: string) => {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
 };
 
 const appFeatures = [
@@ -249,89 +249,51 @@ export default function AppPromo() {
       
       {/* QR Code Modal */}
       {showQRModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border border-gray-100 transform transition-all duration-500 scale-100 hover:scale-105">
-            {/* Animated background gradient */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary-500/5 via-transparent to-secondary-500/5"></div>
-            
-            {/* Close button */}
-            <button
-              onClick={() => setShowQRModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200"
-            >
-              <span className="text-gray-600 text-xl">&times;</span>
-            </button>
-            
-            <div className="relative text-center">
-              {/* Header with icon */}
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                  <Smartphone className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                  App downloaden
-                </h3>
-                <p className="text-gray-600 text-lg">Scannen Sie den QR-Code mit Ihrem Smartphone</p>
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">App downloaden</h3>
+              <p className="text-gray-600 mb-6">Scannen Sie den QR-Code mit Ihrem Smartphone:</p>
+              
+              <div className="bg-gray-50 p-6 rounded-xl mb-6">
+                <img 
+                  src={generateQRCodeDataURL(websiteURL)}
+                  alt="QR Code für App Download"
+                  className="w-36 h-36 mx-auto"
+                />
               </div>
               
-              {/* QR Code with enhanced styling */}
-              <div className="relative mb-8">
-                <div className="bg-white p-8 rounded-2xl shadow-inner border-2 border-gray-100 mx-auto inline-block">
-                  {/* Decorative corners */}
-                  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary-500 rounded-tl-lg"></div>
-                  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-primary-500 rounded-tr-lg"></div>
-                  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-primary-500 rounded-bl-lg"></div>
-                  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary-500 rounded-br-lg"></div>
-                  
-                  <img 
-                    src={generateQRCodeDataURL(websiteURL)}
-                    alt="QR Code für App Download"
-                    className="w-52 h-52 mx-auto"
-                  />
-                </div>
-                
-                {/* QR Code glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-2xl blur-xl -z-10 animate-pulse"></div>
-              </div>
-              
-              <p className="text-gray-500 mb-8 text-base">
-                Der QR-Code führt Sie zur Download-Seite für <strong className="text-gray-700">iOS</strong> und <strong className="text-gray-700">Android</strong>
+              <p className="text-sm text-gray-500 mb-6">
+                Der QR-Code führt Sie zur Download-Seite für iOS und Android
               </p>
               
-              {/* Enhanced download buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div className="flex flex-col gap-3">
                 <a
                   href={appStoreURL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-gray-900 to-black hover:from-black hover:to-gray-900 text-white px-6 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors flex items-center justify-center"
                 >
-                  <Apple className="w-6 h-6 mr-3" />
-                  <div className="text-left">
-                    <div className="text-xs text-gray-300">Download im</div>
-                    <div className="text-sm font-bold">App Store</div>
-                  </div>
+                  <Apple className="w-5 h-5 mr-2" />
+                  App Store
                 </a>
                 <a
                   href={playStoreURL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center"
                 >
-                  <Android className="w-6 h-6 mr-3" />
-                  <div className="text-left">
-                    <div className="text-xs text-gray-100">Jetzt bei</div>
-                    <div className="text-sm font-bold">Google Play</div>
-                  </div>
+                  <Android className="w-5 h-5 mr-2" />
+                  Google Play
                 </a>
               </div>
               
-              {/* Bottom info with sparkles */}
-              <div className="flex items-center justify-center text-sm text-gray-500">
-                <Sparkles className="w-4 h-4 mr-2 text-yellow-400" />
-                <span>Kostenlos für iOS & Android</span>
-                <Sparkles className="w-4 h-4 ml-2 text-yellow-400" />
-              </div>
+              <button 
+                onClick={() => setShowQRModal(false)}
+                className="mt-4 text-gray-500 hover:text-gray-700 text-sm"
+              >
+                Schließen
+              </button>
             </div>
           </div>
         </div>

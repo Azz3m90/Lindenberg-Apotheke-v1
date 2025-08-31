@@ -137,7 +137,7 @@ const languageList = [
 const generateQRCodeDataURL = (url: string) => {
   // This is a placeholder. In a real implementation, you'd use a QR code library
   // For now, we'll use a QR code generation service URL
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
 };
 
 export default function AppPage() {
@@ -324,19 +324,19 @@ export default function AppPage() {
                 </div>
 
                 {/* Floating QR Code */}
-                <div className="absolute -bottom-12 -right-12 bg-white p-6 rounded-2xl shadow-2xl border-4 border-white transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                <div className="absolute -bottom-12 -right-12 bg-white p-4 rounded-2xl shadow-2xl border-4 border-white transform rotate-3 hover:rotate-0 transition-transform duration-300">
                   <button 
                     onClick={() => setShowQRModal(true)}
                     className="group text-center"
                   >
-                    <div className="w-28 h-28 bg-gray-50 rounded-xl flex items-center justify-center mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+                    <div className="w-20 h-20 bg-gray-50 rounded-xl flex items-center justify-center mb-2 overflow-hidden group-hover:scale-105 transition-transform">
                       <img 
                         src={generateQRCodeDataURL(websiteURL)}
                         alt="QR Code zum App Download"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="text-sm text-gray-700 font-bold group-hover:text-primary-600 transition-colors">
+                    <div className="text-xs text-gray-700 font-bold group-hover:text-primary-600 transition-colors">
                       QR-Code scannen
                     </div>
                     <div className="text-xs text-gray-500">zum Download</div>

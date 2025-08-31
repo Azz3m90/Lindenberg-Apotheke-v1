@@ -37,8 +37,8 @@ export function formatDateForApi(date: Date): string {
 
 /**
  * Calculates a date range for API requests
- * Always returns from 13th of current month to 27th of next month
- * @param days Ignored parameter (kept for backward compatibility)
+ * Returns a date range from today to specified number of days in future
+ * @param days Number of days to look ahead (default: 14)
  * @param silent Optional flag to suppress detailed logging (default: false)
  * @returns Object with begin and end dates formatted for API
  */
@@ -49,11 +49,12 @@ export function getApiDateRange(days: number = 14, silent: boolean = false): {
   // Always use current system date for real-time data
   const today = new Date();
   
-  // Start date: 13th of current month
-  const beginDate = new Date(today.getFullYear(), today.getMonth(), 13);
+  // Start date: today
+  const beginDate = new Date(today);
   
-  // End date: 27th of next month
-  const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 27);
+  // End date: today + specified days
+  const endDate = new Date(today);
+  endDate.setDate(endDate.getDate() + days);
 
   const range = {
     begin: formatDateForApi(beginDate),
@@ -62,10 +63,10 @@ export function getApiDateRange(days: number = 14, silent: boolean = false): {
 
   // Only log detailed information when not in silent mode
   if (!silent) {
-    console.log(`🌐 LAKT API Date Range (13th current month to 27th next month):`);
+    console.log(`🌐 LAKT API Date Range (${days} days from today):`);
     console.log(`   From: ${range.begin} (${beginDate.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })})`);
     console.log(`   To: ${range.end} (${endDate.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })})`);
-    console.log(`   Fixed range: 13th of current month to 27th of next month`);
+    console.log(`   Total days: ${days}`);
   }
   
   return range;

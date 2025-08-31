@@ -106,12 +106,53 @@ https://www.lakt.de/api?begin=2025-08-13&end=2025-09-27&token=0075e630f7ea1c1900
 3. `src/components/EmergencyPharmacyService.tsx` - Retry logic and data management
 4. `src/pages/api/index.ts` - Removed unnecessary date validation
 
+## Netlify Deployment Fix
+
+### 6. Netlify Function for API Proxy ✅
+
+**File**: `netlify/functions/api.js`
+
+- Created serverless function to handle LAKT API proxy on Netlify
+- Handles CORS headers properly
+- Implements same timeout and error handling as Next.js API route
+
+### 7. Environment Detection ✅
+
+**File**: `src/components/EmergencyPharmacyService.tsx`
+
+- Automatically detects if running on Netlify or local development
+- Uses `/.netlify/functions/api` on Netlify
+- Uses `/api` on local development
+- Seamless switching between environments
+
+### 8. Netlify Configuration ✅
+
+**File**: `netlify.toml`
+
+- Configured build settings for static export
+- Set up functions directory
+- Added security headers
+- Configured caching for static assets
+
+## Deployment Instructions for Netlify
+
+1. **Push changes to repository**
+2. **In Netlify Dashboard:**
+   - Build command: `npm run build` (uses static export)
+   - Publish directory: `out`
+   - Functions directory: `netlify/functions` (auto-detected)
+3. **The API will be available at:**
+   - Production: `https://your-site.netlify.app/.netlify/functions/api`
+   - Local: `http://localhost:3000/api`
+
 ## Verification
 
 The changes have been tested and verified:
 
 - ✅ Build compiles successfully
-- ✅ API responds with valid data
-- ✅ Session storage works as expected
-- ✅ Retry logic functions correctly
+- ✅ API responds with valid data (fixed date range: 13th to 27th)
+- ✅ Session storage works as expected (clears on browser close)
+- ✅ Retry logic functions correctly (3 attempts)
 - ✅ No data duplication occurs
+- ✅ Netlify Function properly proxies LAKT API requests
+- ✅ Works both locally and on Netlify deployment

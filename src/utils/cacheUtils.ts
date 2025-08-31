@@ -9,25 +9,23 @@ const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
 export interface CachedPharmacyData {
   data: any[];
   timestamp: number;
-  isLiveData: boolean; // true if from LAKT API, false if fallback
 }
 
 /**
  * Store pharmacy data in session cache (clears when browser closes)
  */
-export function cachePharmacyData(data: any[], isLiveData: boolean = true): void {
+export function cachePharmacyData(data: any[]): void {
   if (typeof window === 'undefined') return; // Skip on server-side
   
   try {
     const cacheData: CachedPharmacyData = {
       data,
-      timestamp: Date.now(),
-      isLiveData
+      timestamp: Date.now()
     };
     
     // Use sessionStorage instead of localStorage - clears when browser closes
     sessionStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-    console.log(`💾 Cached pharmacy data in session: ${data.length} entries, live: ${isLiveData} (clears on browser close)`);
+    console.log(`💾 Cached pharmacy data in session: ${data.length} entries (clears on browser close)`);
   } catch (error) {
     console.warn('Failed to cache pharmacy data:', error);
   }

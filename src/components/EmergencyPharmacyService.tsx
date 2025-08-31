@@ -10,6 +10,7 @@ import {
   forceCacheRefresh,
   clearPharmacyCache 
 } from "../utils/cacheUtils";
+import { config, getApiEndpoint, getLaktApiToken } from "../utils/config";
 
 interface Pharmacy {
   id: string;
@@ -42,12 +43,14 @@ export default function EmergencyPharmacyService({
 
   // Helper function to make a single API call attempt
   const makeApiCall = async (beginParam: string, endParam: string, token: string, attemptNumber: number) => {
-    const apiUrl = `/api?begin=${beginParam}&end=${endParam}&token=${token}`;
+    // Get the appropriate API endpoint based on environment
+    const apiEndpoint = getApiEndpoint();
+    const apiUrl = `${apiEndpoint}?begin=${beginParam}&end=${endParam}&token=${token}`;
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), config.api.timeout);
     
-    console.log(`📡 API attempt ${attemptNumber}/3...`);
+    console.log(`📡 API attempt ${attemptNumber}/${config.api.maxRetries} to ${apiEndpoint}...`);
     
     const response = await fetch(apiUrl, {
       signal: controller.signal,
@@ -70,7 +73,6 @@ export default function EmergencyPharmacyService({
   const fetchEmergencyPharmacies = useCallback(async (forceRefresh: boolean = false) => {
     let beginParam: string = '';
     let endParam: string = '';
-    const MAX_RETRIES = 3;
     let lastError: any = null;
     
     try {
@@ -89,23 +91,24 @@ export default function EmergencyPharmacyService({
         }
       }
 
-      console.log('🌐 Starting API calls to LAKT (up to 3 attempts)...');
+      console.log(`🌐 Starting API calls to LAKT (up to ${config.api.maxRetries} attempts)...`);
       showLoader("Aktuelle Notdienst-Daten werden von LAKT abgerufen...");
 
       // Get date range for API request
       const dateRange = getApiDateRange(14, false);
       beginParam = dateRange.begin;
       endParam = dateRange.end;
-      const token = "0075e630f7ea1c1900a8bb186ccc7382b0f48608";
+      const token = getLaktApiToken();
 
-      // Try up to 3 times
-      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      // Try up to maxRetries times
+      for (let attempt = 1; attempt <= config.api.maxRetries; attempt++) {
         try {
           if (attempt > 1) {
-            // Wait 2 seconds before retry
-            console.log(`⏳ Waiting 2 seconds before retry attempt ${attempt}...`);
-            showLoader(`Versuch ${attempt} von ${MAX_RETRIES} - Notdienst-Daten werden abgerufen...`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Wait before retry
+            const delaySeconds = config.api.retryDelay / 1000;
+            console.log(`⏳ Waiting ${delaySeconds} seconds before retry attempt ${attempt}...`);
+            showLoader(`Versuch ${attempt} von ${config.api.maxRetries} - Notdienst-Daten werden abgerufen...`);
+            await new Promise(resolve => setTimeout(resolve, config.api.retryDelay));
           }
 
           const xmlText = await makeApiCall(beginParam, endParam, token, attempt);
@@ -131,15 +134,15 @@ export default function EmergencyPharmacyService({
           lastError = attemptError;
           console.error(`❌ Attempt ${attempt} failed:`, attemptError);
           
-          if (attempt === MAX_RETRIES) {
-            console.error('All 3 attempts failed. Showing error message.');
+          if (attempt === config.api.maxRetries) {
+            console.error(`All ${config.api.maxRetries} attempts failed. Showing error message.`);
             break;
           }
         }
       }
       
       // All attempts failed - handle error
-      let errorMessage = "Die Notdienst-Daten konnten nach 3 Versuchen nicht abgerufen werden.";
+      let errorMessage = `Die Notdienst-Daten konnten nach ${config.api.maxRetries} Versuchen nicht abgerufen werden.`;
       
       if (lastError instanceof Error) {
         if (lastError.name === 'AbortError') {
