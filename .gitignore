@@ -9,6 +9,3 @@
 /TEMP/
 
 # Environment variables
-.env.local
-.env.production
-.env*.local
