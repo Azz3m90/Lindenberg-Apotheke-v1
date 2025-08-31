@@ -34,7 +34,12 @@ export default async function handler(
   // Construct LAKT API URL
   const laktApiUrl = `${LAKT_API_BASE_URL}?begin=${begin}&end=${end}&token=${token}`;
   
-  console.log('🌐 Proxying request to LAKT API:', laktApiUrl);
+  console.log('🌐 Proxying request to LAKT API:', {
+    url: laktApiUrl,
+    begin,
+    end,
+    currentDate: new Date().toISOString()
+  });
 
   try {
     // Create AbortController for timeout
@@ -54,7 +59,19 @@ export default async function handler(
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      console.error(`❌ LAKT API error: HTTP ${response.status} ${response.statusText}`);
+      console.error(`❌ LAKT API error: HTTP ${response.status} ${response.statusText}`, {
+        url: laktApiUrl,
+        begin,
+        end
+      });
+      
+      // Provide more specific error messages
+      if (response.status === 404) {
+        return res.status(404).json({
+          error: `LAKT API endpoint not found. The service might be temporarily unavailable or the date range (${begin} to ${end}) might be invalid.`
+        });
+      }
+      
       return res.status(response.status).json({
         error: `LAKT API error: ${response.status} ${response.statusText}`
       });

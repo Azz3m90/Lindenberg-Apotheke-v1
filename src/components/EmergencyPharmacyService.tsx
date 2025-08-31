@@ -7,7 +7,8 @@ import {
   getCachedPharmacyData, 
   isCacheValid,
   getCacheStats,
-  forceCacheRefresh 
+  forceCacheRefresh,
+  clearPharmacyCache 
 } from "../utils/cacheUtils";
 
 interface Pharmacy {
@@ -39,106 +40,127 @@ export default function EmergencyPharmacyService({
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const { showLoader, hideLoader } = useGlobalLoader();
 
-  // Function to fetch emergency pharmacy data (only called when cache is invalid or forced)
+  // Helper function to make a single API call attempt
+  const makeApiCall = async (beginParam: string, endParam: string, token: string, attemptNumber: number) => {
+    const apiUrl = `/api?begin=${beginParam}&end=${endParam}&token=${token}`;
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    
+    console.log(`📡 API attempt ${attemptNumber}/3...`);
+    
+    const response = await fetch(apiUrl, {
+      signal: controller.signal,
+      headers: {
+        'Accept': 'application/xml, text/xml',
+        'User-Agent': 'Lindenberg-Apotheke-Website/1.0'
+      }
+    });
+    
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.text();
+  };
+
+  // Function to fetch emergency pharmacy data with retry logic
   const fetchEmergencyPharmacies = useCallback(async (forceRefresh: boolean = false) => {
+    let beginParam: string = '';
+    let endParam: string = '';
+    const MAX_RETRIES = 3;
+    let lastError: any = null;
+    
     try {
+      // Clear any existing data first to prevent duplicates
+      onDataLoaded([]);
+      
       // Check cache first unless forced refresh
       if (!forceRefresh) {
         const cachedData = getCachedPharmacyData();
         if (cachedData) {
-          console.log('📦 Using cached pharmacy data (skipping API call)');
+          console.log('📦 Using cached pharmacy data from session (skipping API call)');
           setLastFetchTime(new Date(cachedData.timestamp));
-          setError(null); // Clear any previous errors when using valid cache
+          setError(null);
           onDataLoaded(cachedData.data);
           return;
         }
       }
 
-      // If we reach here, we're actually making an API call
-      console.log('🌐 Making fresh API call to LAKT (cache invalid or forced refresh)');
-
+      console.log('🌐 Starting API calls to LAKT (up to 3 attempts)...');
       showLoader("Aktuelle Notdienst-Daten werden von LAKT abgerufen...");
 
-      // Get date range for API request (current date + 14 days) - with detailed logging
-      const { begin: beginParam, end: endParam } = getApiDateRange(14, false);
-
-      console.log("Fetching live LAKT data with dynamic date range");
-
-      // API token for LAKT service
+      // Get date range for API request
+      const dateRange = getApiDateRange(14, false);
+      beginParam = dateRange.begin;
+      endParam = dateRange.end;
       const token = "0075e630f7ea1c1900a8bb186ccc7382b0f48608";
 
-      console.log(
-        `Fetching live emergency pharmacy data from LAKT API: ${beginParam} to ${endParam}`
-      );
+      // Try up to 3 times
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+          if (attempt > 1) {
+            // Wait 2 seconds before retry
+            console.log(`⏳ Waiting 2 seconds before retry attempt ${attempt}...`);
+            showLoader(`Versuch ${attempt} von ${MAX_RETRIES} - Notdienst-Daten werden abgerufen...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
 
-      // Fetch data from our API proxy (which calls LAKT API) with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-      
-      const response = await fetch(
-        `/api?begin=${beginParam}&end=${endParam}&token=${token}`,
-        {
-          signal: controller.signal,
-          headers: {
-            'Accept': 'application/xml, text/xml',
-            'User-Agent': 'Lindenberg-Apotheke-Website/1.0'
+          const xmlText = await makeApiCall(beginParam, endParam, token, attempt);
+          
+          console.log(`✅ Success on attempt ${attempt}! Received data from LAKT API`);
+          setError(null);
+
+          // Parse the XML response
+          const pharmacies = parseXmlResponse(xmlText);
+
+          // Clear cache first, then save new data
+          clearPharmacyCache();
+          cachePharmacyData(pharmacies);
+
+          setLastFetchTime(new Date());
+          
+          // Clear old data and set new data
+          onDataLoaded(pharmacies);
+          
+          return; // Success - exit function
+          
+        } catch (attemptError) {
+          lastError = attemptError;
+          console.error(`❌ Attempt ${attempt} failed:`, attemptError);
+          
+          if (attempt === MAX_RETRIES) {
+            console.error('All 3 attempts failed. Showing error message.');
+            break;
           }
         }
-      );
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
-      const xmlText = await response.text();
       
-      console.log("Successfully received live data from LAKT API");
-      setError(null); // Clear any previous errors
-
-      const pharmacies = parseXmlResponse(xmlText);
-
-      // Cache the live data
-      cachePharmacyData(pharmacies);
-
-      // Update last fetch time
-      setLastFetchTime(new Date());
-
-      // Pass data to parent component
-      onDataLoaded(pharmacies);
+      // All attempts failed - handle error
+      let errorMessage = "Die Notdienst-Daten konnten nach 3 Versuchen nicht abgerufen werden.";
       
-    } catch (err) {
-      console.error("Error fetching emergency pharmacy data:", err);
-      
-      // Provide more descriptive error messages
-      let errorMessage = "Unbekannter Fehler beim Laden der Notdienst-Daten";
-      
-      if (err instanceof Error) {
-        if (err.name === 'AbortError') {
-          errorMessage = "Zeitüberschreitung - Die LAKT-API antwortet nicht (15s Timeout). Versuchen Sie es später erneut.";
-        } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-          errorMessage = "Netzwerkfehler - Keine Verbindung zur LAKT-API möglich. Bitte überprüfen Sie Ihre Internetverbindung.";
-        } else if (err.message.includes('timeout')) {
-          errorMessage = "Zeitüberschreitung - Die LAKT-API antwortet nicht. Bitte versuchen Sie es später erneut.";
-        } else if (err.message.includes('404')) {
-          errorMessage = "LAKT-API Endpunkt nicht gefunden (HTTP 404). Der Service könnte temporär nicht verfügbar sein.";
-        } else if (err.message.includes('500')) {
-          errorMessage = "LAKT-API Server Fehler (HTTP 500). Der Service ist temporär nicht verfügbar.";
-        } else if (err.message.includes('HTTP')) {
-          errorMessage = `LAKT-API Fehler: ${err.message}`;
-        } else {
-          errorMessage = `Verbindungsfehler: ${err.message}`;
+      if (lastError instanceof Error) {
+        if (lastError.name === 'AbortError') {
+          errorMessage = "Die Notdienst-Daten konnten nicht abgerufen werden. Die Anfragen haben zu lange gedauert.";
+        } else if (lastError.message.includes('Failed to fetch') || lastError.message.includes('NetworkError')) {
+          errorMessage = "Die Notdienst-Daten konnten nicht abgerufen werden. Bitte überprüfen Sie Ihre Internetverbindung.";
+        } else if (lastError.message.includes('404')) {
+          errorMessage = "Die Notdienst-Daten konnten nicht abgerufen werden. Bitte kontaktieren Sie uns direkt: ☎ 03677 888888";
+        } else if (lastError.message.includes('500')) {
+          errorMessage = "Die Notdienst-Daten konnten nicht abgerufen werden. Der Service ist temporär nicht verfügbar.";
         }
       }
       
       setError(errorMessage);
       setLastFetchTime(new Date());
-      
-      // Send empty array to show "Keine Apotheken gefunden" message
       onDataLoaded([]);
       
-      console.log("❌ API request failed - showing empty state with error message");
+    } catch (err) {
+      console.error("Unexpected error in fetchEmergencyPharmacies:", err);
+      setError("Ein unerwarteter Fehler ist aufgetreten.");
+      onDataLoaded([]);
     } finally {
       hideLoader();
     }

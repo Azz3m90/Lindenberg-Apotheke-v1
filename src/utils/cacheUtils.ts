@@ -13,7 +13,7 @@ export interface CachedPharmacyData {
 }
 
 /**
- * Store pharmacy data in local cache
+ * Store pharmacy data in session cache (clears when browser closes)
  */
 export function cachePharmacyData(data: any[], isLiveData: boolean = true): void {
   if (typeof window === 'undefined') return; // Skip on server-side
@@ -25,8 +25,9 @@ export function cachePharmacyData(data: any[], isLiveData: boolean = true): void
       isLiveData
     };
     
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-    console.log(`💾 Cached pharmacy data: ${data.length} entries, live: ${isLiveData} (valid for 6 hours)`);
+    // Use sessionStorage instead of localStorage - clears when browser closes
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+    console.log(`💾 Cached pharmacy data in session: ${data.length} entries, live: ${isLiveData} (clears on browser close)`);
   } catch (error) {
     console.warn('Failed to cache pharmacy data:', error);
   }
@@ -39,9 +40,10 @@ export function getCachedPharmacyData(): CachedPharmacyData | null {
   if (typeof window === 'undefined') return null; // Skip on server-side
   
   try {
-    const cachedStr = localStorage.getItem(CACHE_KEY);
+    // Use sessionStorage instead of localStorage
+    const cachedStr = sessionStorage.getItem(CACHE_KEY);
     if (!cachedStr) {
-      console.log('📦 No cached pharmacy data found');
+      console.log('📦 No cached pharmacy data found in session');
       return null;
     }
     
@@ -52,12 +54,12 @@ export function getCachedPharmacyData(): CachedPharmacyData | null {
     const ageMinutes = Math.round(age / (1000 * 60));
     
     if (age > CACHE_DURATION) {
-      console.log(`📦 Cached pharmacy data expired (${ageMinutes} minutes old) - clearing cache`);
+      console.log(`📦 Session pharmacy data expired (${ageMinutes} minutes old) - clearing cache`);
       clearPharmacyCache();
       return null;
     }
     
-    console.log(`📦 Found valid cached pharmacy data (${ageMinutes} minutes old, ${cached.data.length} entries)`);
+    console.log(`📦 Found valid pharmacy data in session (${ageMinutes} minutes old, ${cached.data.length} entries)`);
     return cached;
     
   } catch (error) {
@@ -82,8 +84,9 @@ export function clearPharmacyCache(): void {
   if (typeof window === 'undefined') return;
   
   try {
-    localStorage.removeItem(CACHE_KEY);
-    console.log('Pharmacy data cache cleared');
+    // Clear from sessionStorage
+    sessionStorage.removeItem(CACHE_KEY);
+    console.log('Pharmacy session cache cleared');
   } catch (error) {
     console.warn('Failed to clear pharmacy cache:', error);
   }

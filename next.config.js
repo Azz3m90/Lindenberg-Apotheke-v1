@@ -12,8 +12,8 @@ const nextConfig = {
   // These paths should be handled by your hosting platform's redirects
   // or by creating actual static pages at these paths
   
-  // For development mode, we can still define these
-  ...(process.env.NODE_ENV === 'development' ? {
+  // For non-static builds, we need rewrites for legacy URLs
+  ...(process.env.BUILD_STATIC !== 'true' ? {
     async rewrites() {
       return [
         {
@@ -31,11 +31,8 @@ const nextConfig = {
         {
           source: '/kontakt/',
           destination: '/contact'
-        },
-        {
-          source: '/api/:path*',
-          destination: 'https://www.lakt.de/api/:path*'
         }
+        // Note: Removed the /api rewrite to let our API proxy handle it
       ]
     }
   } : {})
