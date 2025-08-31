@@ -86,10 +86,11 @@ export default function Home() {
           url: "https://www.lindenberg-apotheke.de/",
           images: [
             {
-              url: "/og-image-home.jpg",
+              url: "/og-image-home.svg",
               width: 1200,
               height: 630,
               alt: "Lindenberg-Apotheke Ilmenau - Moderne Apotheke im Ärztehaus",
+              type: "image/svg+xml",
             },
           ],
         }}

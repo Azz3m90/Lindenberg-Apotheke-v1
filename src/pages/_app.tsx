@@ -22,10 +22,11 @@ const defaultSEO = {
       "Moderne Apotheke im Herzen von Ilmenau - Keine Wartezeiten bei Blutdruckmessung, individuelle Kompressionsstrumpf-Anpassung, kompetente Beratung.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
         alt: "Lindenberg-Apotheke Ilmenau - Ihre moderne Apotheke",
+        type: "image/svg+xml",
       },
     ],
   },
