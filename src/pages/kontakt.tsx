@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Shield,
   RefreshCw,
+  Printer,
 } from "lucide-react";
 
 interface ContactFormData {
@@ -370,7 +371,26 @@ export default function Kontakt() {
                       </p>
                     </div>
                   </div>
-
+                  {/* Fax */}
+                  <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Printer className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        FAX
+                      </h3>
+                      <a
+                        href="tel:+49 3677 61911"
+                        className="text-xl font-bold text-primary-600 hover:text-primary-700 transition-colors"
+                      >
+                        03677 61911
+                      </a>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Mo-Fr: 7:00-18:00 Uhr | Sa: 9:00-12:00 Uhr
+                      </p>
+                    </div>
+                  </div>
                   {/* Email */}
                   <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
                     <div className="flex-shrink-0 w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
