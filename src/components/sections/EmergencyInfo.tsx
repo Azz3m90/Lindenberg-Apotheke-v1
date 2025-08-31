@@ -52,8 +52,28 @@ export default function EmergencyInfo() {
 
   // Load all emergency pharmacies for today from cached data
   useEffect(() => {
-    const loadTodayPharmacies = () => {
-      const cachedData = getCachedPharmacyData();
+    const loadTodayPharmacies = async () => {
+      let cachedData = getCachedPharmacyData();
+      
+      // If no cached data, try to fetch it
+      if (!cachedData || cachedData.data.length === 0) {
+        console.log('No cached data found, fetching from API...');
+        try {
+          const response = await fetch('/api/emergency-pharmacy/');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.pharmacies) {
+              // Cache the fetched data
+              const cacheUtils = await import('../../utils/cacheUtils');
+              cacheUtils.cachePharmacyData(data.pharmacies);
+              cachedData = { data: data.pharmacies, timestamp: Date.now() };
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch emergency pharmacy data:', error);
+        }
+      }
+      
       if (cachedData && cachedData.data.length > 0) {
         const now = new Date();
         const today = now.toLocaleDateString("de-DE", {
